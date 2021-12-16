@@ -1,62 +1,89 @@
+from math import e
 from imports import *
 from generate_features import *
 
 
-def hyperparam_search_SVM(model_name, dataset, Cs=[1], gammas=[1], coefs=[1], deg=1, show_progress = 100, max_iter = -1):
+def hyperparam_search_SVM(type_of_search, kernel, dataset, output_name="out.sav",
+                            num_iter=100, Cs=[1], gammas=[1], coefs=[1], deg=1, cvfolds=2, verbose=0):
+    #Loading dataset
     X = dataset.values[:,:-1]
     Y = dataset.values[:,-1]
 
-    X_train, X_test, y_train, y_test = \
-    train_test_split(X, Y, test_size=0.1, random_state=1)
+    print("MODEL SVM\nKernel:", kernel)
+    print("Starting search (" + type_of_search + "):\n")
 
-    accuracies = np.zeros([len(Cs)*len(gammas)*len(coefs), 4])
-    max_accur = 0
-    
-    if (model_name == "poly"):
-        filename = '../models/model' + model_name.capitalize() + str(deg) + '.sav'
-    else:
-        filename = '../models/model' + model_name.capitalize() + '.sav'
-    
-    print("MODEL SVM\nKernel:", model_name, "\nStarting search")
-    idx = 0
-    for coef in coefs:
-        for g in gammas:
-            for c in Cs:
-                if idx % show_progress == 0:
-                    print("Progress: "+str(idx)+"/"+str(len(Cs)*len(gammas)*len(coefs)))
+    parameters = [{'kernel' : [kernel],
+                   'C' : Cs,
+                   'gamma' : gammas,
+                   'coef0' : coefs,
+                   'degree' : [deg]}]
+    estimator = svm.SVC()
 
-                model = svm.SVC(kernel = model_name, C=c, gamma = g, coef0 = coef, degree = deg, max_iter = max_iter)
-                model.fit(X_train,y_train.flatten())
-                predict = model.predict(X_test)
+    if (type_of_search == "grid"):
+        search = GridSearchCV(estimator=estimator, param_grid=parameters, scoring="accuracy", cv=cvfolds, n_jobs=-1, verbose=verbose)
+    elif (type_of_search == "random"):
+        search = RandomizedSearchCV(estimator=estimator, param_distributions=parameters, scoring="accuracy", n_iter=num_iter, cv=cvfolds, n_jobs=-1, verbose=verbose)
+    search.fit(X, Y)
 
-                accuracies[idx][0] = (predict == y_test.flatten()).sum()/predict.size #Accuracy
-                accuracies[idx][1] = c
-                accuracies[idx][2] = g
-                accuracies[idx][3] = coef
+    print("\nFinal scoring (\"accuracy\"):", search.score(X, Y), "\n")
 
-                current_accuracy = accuracies[np.argmax(accuracies[:, 0])][0]
-                if (max_accur < current_accuracy):
-                    max_accur = current_accuracy
-                    pickle.dump(model, open(filename, 'wb'))
-                
-                idx += 1
-    print("DONE\n")
+    #Training model with the hyperparameters resulting from the search
+    b_params = search.best_params_
+    model = svm.SVC(kernel = b_params['kernel'],
+                    C=b_params['C'],
+                    gamma = b_params['gamma'],
+                    coef0 = b_params['coef0'], 
+                    degree = b_params['degree'],
+                    max_iter = -1)
+
+    #Saving model to pickle file
+    model.fit(X, Y)
+    pickle.dump(model, open('../models/' + output_name, 'wb'))
+
+
 
 if __name__ == "__main__":
-    Cs = [0.025*i for i in range(1, 41)] + [0.5*i for i in range(2, 21)]
-    gammas = [1/reduced_dataset_standard.shape[1]] + [0.025*i for i in range(1, 41)]
-    coefs = [0.25*i for i in range(4)] + [i for i in range(6)]
+    #TODO: precomputed kernel
 
+    Cs = [0.01*i for i in range(1, 1000)]
+    #hyperparam_search_SVM("grid", "linear", reduced_dataset_standard, Cs=Cs)
+
+    Cs = loguniform(1e-5, 100)
+    gammas = [0.001*i for i in range(1, 10000)]
+    coefs = [0.01*i for i in range(1000)]
+
+    """hyperparam_search_SVM("random", "rbf", reduced_dataset_standard,
+                            output_name="modelRbf.sav",
+                            num_iter=2000, verbose=10, 
+                            Cs=Cs, gammas=gammas, cvfolds=3)
+
+    hyperparam_search_SVM("random", "sigmoid", reduced_dataset_standard,
+                            output_name="modelSigmoid.sav",
+                            num_iter=2000, verbose=10,
+                            Cs=Cs, gammas=gammas, cvfolds=3)"""
+
+    hyperparam_search_SVM("random", "poly", reduced_dataset_standard,
+                            output_name="modelPoly1.sav",
+                            num_iter=2000, verbose=10,
+                            Cs=Cs, gammas=gammas, coefs=coefs, deg=1, cvfolds=3)
+
+    """hyperparam_search_SVM("random", "poly", reduced_dataset_standard,
+                            output_name="modelPoly2.sav",
+                            num_iter=2000, verbose=10,
+                            Cs=Cs, gammas=gammas, coefs=coefs, deg=2, cvfolds=3)
+
+    hyperparam_search_SVM("random", "poly", reduced_dataset_standard,
+                            output_name="modelPoly3.sav",
+                            num_iter=2000, verbose=10,
+                            Cs=Cs, gammas=gammas, coefs=coefs, deg=3, cvfolds=3)
     
-    #Cs = [0.01*i for i in range(1, 100)] + [0.2*i for i in range(5, 51)]
-    #hyperparam_search_SVM("linear", reduced_dataset_standard, Cs=Cs, show_progress = 20)
-
-    hyperparam_search_SVM("rbf", reduced_dataset_standard, Cs=Cs, gammas=gammas, show_progress = 50)
-
-    #hyperparam_search_SVM("sigmoid", reduced_dataset_standard, Cs=Cs, gammas=gammas, show_progress = 10)
+    hyperparam_search_SVM("random", "poly", reduced_dataset_standard,
+                            output_name="modelPoly4.sav",
+                            num_iter=2000, verbose=10,
+                            Cs=Cs, gammas=gammas, coefs=coefs, deg=4, cvfolds=3)"""
 
     #hyperparam_search_SVM("poly", reduced_dataset_standard, Cs=Cs, gammas=gammas, coefs=coefs, deg=1, show_progress = 10)
 
     #hyperparam_search_SVM("poly", reduced_dataset_standard, Cs=Cs, gammas=gammas, coefs=coefs, deg=2, show_progress = 10)
 
-    #hyperparam_search_SVM("poly", reduced_dataset_standard, Cs=Cs, gammas=gammas, coefs=coefs, deg=3, show_progress = 10)
+    #hyperparam_search_SVM("poly", reduced_dataset_standard, Cs=Cs, gammas=gammas, coefs=coefs, deg=3, show_progress = 10)"""

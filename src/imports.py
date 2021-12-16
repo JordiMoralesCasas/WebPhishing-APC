@@ -11,6 +11,7 @@ import scipy.stats
 from matplotlib import pyplot as plt
 from tqdm import tqdm
 from mpl_toolkits.mplot3d import Axes3D
+from scipy.stats import loguniform
 
 
 # Torch
@@ -33,6 +34,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.feature_selection import RFE
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import KFold
+#from sklearn import svm
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
 
 # Set working directory to current location
 abspath = os.path.abspath(__file__)

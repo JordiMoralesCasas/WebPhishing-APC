@@ -2,7 +2,7 @@ from generate_features import *
 from utils import *
 
 
-def train_logistic_regression(dataset, k_folds=2, num_epochs=1, learning_rate=0.05):
+def train_logistic_regression_kfold(dataset, k_folds=2, num_epochs=1, learning_rate=0.05, save=False):
     X = dataset.values[:,:-1]
     Y = dataset.values[:,-1]
 
@@ -17,16 +17,11 @@ def train_logistic_regression(dataset, k_folds=2, num_epochs=1, learning_rate=0.
     input_dim = X.shape[1] # Independent variables 
     output_dim = 1 # Single binary output
 
-    results = {}
-
+    accuracies = []
     kfold = KFold(n_splits=k_folds, shuffle=True)
     criterion = torch.nn.BCELoss() # Definim el criteri de la funció de cost
 
     for fold, (train_ids, test_ids) in enumerate(kfold.split(reduced_dataset_standard)):
-        # Print
-        print("\n", f'FOLD {fold}')
-        print('--------------------------------')
-        
         # Sample elements randomly from a given list of ids, no replacement.
         train_subsampler = torch.utils.data.SubsetRandomSampler(train_ids)
         test_subsampler = torch.utils.data.SubsetRandomSampler(test_ids)
@@ -48,12 +43,8 @@ def train_logistic_regression(dataset, k_folds=2, num_epochs=1, learning_rate=0.
         # Run the training loop for defined number of epochs
         for epoch in range(0, num_epochs):
 
-            # Print epoch
-            print(f'Starting epoch {epoch+1}')
-
             # Iterate over the DataLoader for training data
             for i, data in enumerate(trainloader, 0):
-            
                 # Get inputs
                 inputs = data[:,:-1].float()
                 targets = data[:, -1].reshape((inputs.shape[0],1)).float()
@@ -73,9 +64,6 @@ def train_logistic_regression(dataset, k_folds=2, num_epochs=1, learning_rate=0.
                 # Perform optimization
                 optimizer.step()
                 
-        # Print about testing
-        print('Starting testing')
-
         # Evaluation for this fold
         correct, total = 0, 0
         with torch.no_grad():
@@ -91,29 +79,41 @@ def train_logistic_regression(dataset, k_folds=2, num_epochs=1, learning_rate=0.
                 # Set total and correct
                 _, predicted = torch.max(outputs.data, 1)
                 total += targets.size(0)
-                
                 correct += np.sum(outputs.round().detach().numpy() == targets.detach().numpy())
 
-            # Print accuracy
-            print('Accuracy for fold %d: %d %%' % (fold, 100.0 * correct / total))
-            print('--------------------------------')
-            results[fold] = 100.0 * (correct / total)
+            accuracies.append(100.0 * (correct / total))
         
-        # Saving the best model (best accuracy)
-        if (max(results, key=results.get) == fold):
-            save_path = f'../models/modelLogiReg.pth'
+        # Saving the model
+        if (save):
+            save_path = '../models/LogiRegFolds/modelLogiReg'+ str(fold) +'.sav'
             pickle.dump(model, open(save_path, 'wb'))
         
-        # Print fold results
-        print(f'K-FOLD CROSS VALIDATION RESULTS FOR {k_folds} FOLDS')
-        print('--------------------------------')
-        sum = 0.0
-        for key, value in results.items():
-            print(f'Fold {key}: {value} %')
-            sum += value
-        print(f'\nAverage: {sum/len(results.items())} %')
-        print("Best fold:", max(results, key=results.get))
+    average_accuracy = sum(accuracies)/len(accuracies)
+    return average_accuracy
 
+def hyperparam_search_logistic(dataset, num_epochs=10, learning_rates=[0.05], number_of_folds=[10], show_progress=10):
+    print("MODEL Logistic regression\nStarting search:")
+    max_accuracy = 0
+    best_params = {'learning_rate': 0, 'num_folds' : 0}
+    idx = 0
+    for lr in learning_rates:
+        for k in number_of_folds:
+            if idx % show_progress == 0:
+                    print("Progress: "+str(idx)+"/"+str(len(learning_rates)*len(number_of_folds)))
+            current_accuracy = train_logistic_regression_kfold(dataset, k_folds=k, num_epochs=num_epochs, learning_rate=lr)
+
+            if (current_accuracy > max_accuracy):
+                max_accuracy = current_accuracy
+                best_params["learning_rate"] = lr
+                best_params["num_folds"] = k
+            idx += 1
+    
+    print("Search finished. Saving model:")
+    train_logistic_regression_kfold(dataset, k_folds=best_params["num_folds"], num_epochs=num_epochs, learning_rate=best_params["learning_rate"], save=True)
+    print("DONE")
 
 if __name__ == "__main__":
-    train_logistic_regression(reduced_dataset_standard, k_folds=50, num_epochs=50, learning_rate=0.05)
+
+    learning_rates = [0.01, 0.05, 0.1, 0.2, 0.5]
+    number_of_folds = [2, 5, 10, 20, 30]
+    #hyperparam_search_logistic(reduced_dataset_standard, learning_rates=learning_rates, number_of_folds=number_of_folds, show_progress=1)

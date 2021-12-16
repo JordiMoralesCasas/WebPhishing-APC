@@ -1,6 +1,7 @@
 from imports import *
 
 np.random.seed(1)
+torch.manual_seed(1)
 
 # Loading Dataset
 ds_original = pd.read_csv(r'..\data\external\dataset_phishing.csv', header=0, delimiter=',',decimal=',')
