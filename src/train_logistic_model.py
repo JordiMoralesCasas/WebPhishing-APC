@@ -1,8 +1,10 @@
 from generate_features import *
 from utils import *
 
+from pca import *
 
-def train_logistic_regression_kfold(dataset, k_folds=2, num_epochs=1, learning_rate=0.05, save=False):
+
+def train_logistic_regression_kfold(dataset, k_folds=2, num_epochs=1, learning_rate=0.05, save=False, output_name = "out", folder_path = "../model"):
     X = dataset.values[:,:-1]
     Y = dataset.values[:,-1]
 
@@ -21,17 +23,17 @@ def train_logistic_regression_kfold(dataset, k_folds=2, num_epochs=1, learning_r
     kfold = KFold(n_splits=k_folds, shuffle=True)
     criterion = torch.nn.BCELoss() # Definim el criteri de la funció de cost
 
-    for fold, (train_ids, test_ids) in enumerate(kfold.split(reduced_dataset_standard)):
+    for fold, (train_ids, test_ids) in enumerate(kfold.split(dataset)):
         # Sample elements randomly from a given list of ids, no replacement.
         train_subsampler = torch.utils.data.SubsetRandomSampler(train_ids)
         test_subsampler = torch.utils.data.SubsetRandomSampler(test_ids)
         
         # Define data loaders for training and testing data in this fold
         trainloader = torch.utils.data.DataLoader(
-                        reduced_dataset_standard.to_numpy(), 
+                        dataset.to_numpy(), 
                         batch_size=10, sampler=train_subsampler)
         testloader = torch.utils.data.DataLoader(
-                        reduced_dataset_standard.to_numpy(),
+                        dataset.to_numpy(),
                         batch_size=10, sampler=test_subsampler)
         
         # Init the neural network
@@ -85,13 +87,13 @@ def train_logistic_regression_kfold(dataset, k_folds=2, num_epochs=1, learning_r
         
         # Saving the model
         if (save):
-            save_path = '../models/LogiRegFolds/modelLogiReg'+ str(fold) +'.sav'
+            save_path = folder_path + "/" + output_name + str(fold) +'.sav'
             pickle.dump(model, open(save_path, 'wb'))
         
     average_accuracy = sum(accuracies)/len(accuracies)
     return average_accuracy
 
-def hyperparam_search_logistic(dataset, num_epochs=10, learning_rates=[0.05], number_of_folds=[10], show_progress=10):
+def hyperparam_search_logistic(dataset, num_epochs=10, learning_rates=[0.05], number_of_folds=[10], show_progress=10, output_name = "out", folder_path = "../model"):
     print("MODEL Logistic regression\nStarting search:")
     max_accuracy = 0
     best_params = {'learning_rate': 0, 'num_folds' : 0}
@@ -99,8 +101,10 @@ def hyperparam_search_logistic(dataset, num_epochs=10, learning_rates=[0.05], nu
     for lr in learning_rates:
         for k in number_of_folds:
             if idx % show_progress == 0:
-                    print("Progress: "+str(idx)+"/"+str(len(learning_rates)*len(number_of_folds)))
-            current_accuracy = train_logistic_regression_kfold(dataset, k_folds=k, num_epochs=num_epochs, learning_rate=lr)
+                print("Progress: "+str(idx)+"/"+str(len(learning_rates)*len(number_of_folds)))
+            
+            current_accuracy = train_logistic_regression_kfold(dataset, k_folds=k, num_epochs=num_epochs, learning_rate=lr, 
+                                                                output_name = output_name, folder_path = folder_path)
 
             if (current_accuracy > max_accuracy):
                 max_accuracy = current_accuracy
@@ -109,11 +113,30 @@ def hyperparam_search_logistic(dataset, num_epochs=10, learning_rates=[0.05], nu
             idx += 1
     
     print("Search finished. Saving model:")
-    train_logistic_regression_kfold(dataset, k_folds=best_params["num_folds"], num_epochs=num_epochs, learning_rate=best_params["learning_rate"], save=True)
+    train_logistic_regression_kfold(dataset, k_folds=best_params["num_folds"], num_epochs=num_epochs, learning_rate=best_params["learning_rate"], save=True,
+                                        output_name = output_name, folder_path = folder_path)
     print("DONE")
 
 if __name__ == "__main__":
 
     learning_rates = [0.01, 0.05, 0.1, 0.2, 0.5]
     number_of_folds = [2, 5, 10, 20, 30]
-    #hyperparam_search_logistic(reduced_dataset_standard, learning_rates=learning_rates, number_of_folds=number_of_folds, show_progress=1)
+
+    learning_rates = [0.01]
+    number_of_folds = [2]
+
+
+    """hyperparam_search_logistic(reduced_dataset_standard, learning_rates=learning_rates, 
+                                number_of_folds=number_of_folds, show_progress=1, 
+                                output_name="reduced", folder_path="../models/LogiRegReduced")"""
+
+    """hyperparam_search_logistic(Full_dataset, learning_rates=learning_rates, 
+                                number_of_folds=number_of_folds, show_progress=1, 
+                                output_name="full", folder_path="../models/LogiRegFull")"""
+
+    
+    pca_dataset = perform_pca(Full_dataset, auto=True, obj_variance=0.90)
+
+    hyperparam_search_logistic(pca_dataset, learning_rates=learning_rates, 
+                                number_of_folds=number_of_folds, show_progress=1, 
+                                output_name="pca", folder_path="../models/LogiRegPCA")

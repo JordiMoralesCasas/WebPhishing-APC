@@ -12,6 +12,7 @@ from matplotlib import pyplot as plt
 from tqdm import tqdm
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.stats import loguniform
+import time
 
 
 # Torch

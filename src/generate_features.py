@@ -56,7 +56,7 @@ categorical_features = ["ip", "http_in_path", "https_token", "punycode", "port",
 "abnormal_subdomain", "prefix_suffix", "random_domain", "shortening_service", "path_extension", "domain_in_brand",\
 "brand_in_subdomain", "brand_in_path", "suspecious_tld", "login_form", "external_favicon", "submit_email", "sfh",\
 "iframe", "popup_window", "onmouseover", "right_clic", "empty_title", "domain_in_title", "domain_with_copyright",\
-"whois_registered_domain", "dns_record", "google_index"]
+"whois_registered_domain", "dns_record", "google_index"]#, "nb_www", "nb_slash", "nb_qm", "nb_hyperlinks", "nb_eq", "nb_dots"]
 non_categorical_features = [i for i in x.columns if (i not in categorical_features)]
 
 x_non_categorical = x[non_categorical_features]
@@ -124,7 +124,6 @@ for i in range(x_train.shape[1]):
 # Select the best atributes (15 atributes)
 best_atributes = r2_table[r2_table[:, 1].argsort()[::-1]][:,0].astype('int')
 
-
 # Fully processed data
 reduced_dataset_standard = x_standard[x_standard.columns[best_atributes[:15]]]
 reduced_dataset_standard = reduced_dataset_standard.assign(status = y.values)
@@ -137,4 +136,7 @@ reduced_dataset = reduced_dataset.assign(status = y.values)
 X = reduced_dataset.drop(columns='status').values
 X_standard = reduced_dataset_standard.drop(columns='status').values
 
+Full_dataset = x_standard.assign(status = y.values) #Full dataset (without feature selection)
+
 Y = reduced_dataset.filter(['status']).values
+

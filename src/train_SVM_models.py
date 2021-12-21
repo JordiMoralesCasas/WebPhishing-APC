@@ -2,6 +2,8 @@ from math import e
 from imports import *
 from generate_features import *
 
+from pca import *
+
 
 def hyperparam_search_SVM(type_of_search, kernel, dataset, output_name="out.sav",
                             num_iter=100, Cs=[1], gammas=[1], coefs=[1], deg=1, cvfolds=2, verbose=0):
@@ -45,45 +47,118 @@ def hyperparam_search_SVM(type_of_search, kernel, dataset, output_name="out.sav"
 if __name__ == "__main__":
     #TODO: precomputed kernel
 
-    Cs = [0.01*i for i in range(1, 1000)]
-    #hyperparam_search_SVM("grid", "linear", reduced_dataset_standard, Cs=Cs)
-
     Cs = loguniform(1e-5, 100)
     gammas = [0.001*i for i in range(1, 10000)]
     coefs = [0.01*i for i in range(1000)]
 
-    """hyperparam_search_SVM("random", "rbf", reduced_dataset_standard,
-                            output_name="modelRbf.sav",
-                            num_iter=2000, verbose=10, 
+    """hyperparam_search_SVM("random", "linear", reduced_dataset_standard,
+                            output_name="LinearReduced.sav",
+                            num_iter=1, verbose=10, 
+                            Cs=Cs, cvfolds=3)
+
+    hyperparam_search_SVM("random", "rbf", reduced_dataset_standard,
+                            output_name="RbfReduced.sav",
+                            num_iter=1, verbose=10, 
                             Cs=Cs, gammas=gammas, cvfolds=3)
 
     hyperparam_search_SVM("random", "sigmoid", reduced_dataset_standard,
-                            output_name="modelSigmoid.sav",
-                            num_iter=2000, verbose=10,
-                            Cs=Cs, gammas=gammas, cvfolds=3)"""
+                            output_name="SigmoidReduced.sav",
+                            num_iter=1, verbose=10,
+                            Cs=Cs, gammas=gammas, cvfolds=3)
 
     hyperparam_search_SVM("random", "poly", reduced_dataset_standard,
-                            output_name="modelPoly1.sav",
-                            num_iter=2000, verbose=10,
+                            output_name="Poly1Reduced.sav",
+                            num_iter=10, verbose=10,
                             Cs=Cs, gammas=gammas, coefs=coefs, deg=1, cvfolds=3)
 
-    """hyperparam_search_SVM("random", "poly", reduced_dataset_standard,
-                            output_name="modelPoly2.sav",
-                            num_iter=2000, verbose=10,
+    hyperparam_search_SVM("random", "poly", reduced_dataset_standard,
+                            output_name="Poly2Reduced.sav",
+                            num_iter=1, verbose=10,
                             Cs=Cs, gammas=gammas, coefs=coefs, deg=2, cvfolds=3)
 
     hyperparam_search_SVM("random", "poly", reduced_dataset_standard,
-                            output_name="modelPoly3.sav",
-                            num_iter=2000, verbose=10,
+                            output_name="Poly3Reduced.sav",
+                            num_iter=1, verbose=10,
                             Cs=Cs, gammas=gammas, coefs=coefs, deg=3, cvfolds=3)
     
     hyperparam_search_SVM("random", "poly", reduced_dataset_standard,
-                            output_name="modelPoly4.sav",
-                            num_iter=2000, verbose=10,
+                            output_name="Poly4Reduced.sav",
+                            num_iter=1, verbose=10,
                             Cs=Cs, gammas=gammas, coefs=coefs, deg=4, cvfolds=3)"""
 
-    #hyperparam_search_SVM("poly", reduced_dataset_standard, Cs=Cs, gammas=gammas, coefs=coefs, deg=1, show_progress = 10)
+    # Training without feature selection
+    
+    """hyperparam_search_SVM("random", "linear", Full_dataset,
+                            output_name="LinearFull.sav",
+                            num_iter=1, verbose=10, 
+                            Cs=Cs, cvfolds=3)
 
-    #hyperparam_search_SVM("poly", reduced_dataset_standard, Cs=Cs, gammas=gammas, coefs=coefs, deg=2, show_progress = 10)
+    hyperparam_search_SVM("random", "rbf", Full_dataset,
+                            output_name="RbfFull.sav",
+                            num_iter=1, verbose=10, 
+                            Cs=Cs, gammas=gammas, cvfolds=3)
 
-    #hyperparam_search_SVM("poly", reduced_dataset_standard, Cs=Cs, gammas=gammas, coefs=coefs, deg=3, show_progress = 10)"""
+    hyperparam_search_SVM("random", "sigmoid", Full_dataset,
+                            output_name="SigmoidFull.sav",
+                            num_iter=1, verbose=10,
+                            Cs=Cs, gammas=gammas, cvfolds=3)
+
+    hyperparam_search_SVM("random", "poly", Full_dataset,
+                            output_name="Poly1Full.sav",
+                            num_iter=1, verbose=10,
+                            Cs=Cs, gammas=gammas, coefs=coefs, deg=1, cvfolds=3)
+
+    hyperparam_search_SVM("random", "poly", Full_dataset,
+                            output_name="Poly2Full.sav",
+                            num_iter=1, verbose=10,
+                            Cs=Cs, gammas=gammas, coefs=coefs, deg=2, cvfolds=3)
+
+    hyperparam_search_SVM("random", "poly", Full_dataset,
+                            output_name="Poly3Full.sav",
+                            num_iter=1, verbose=10,
+                            Cs=Cs, gammas=gammas, coefs=coefs, deg=3, cvfolds=3)
+    
+    hyperparam_search_SVM("random", "poly", Full_dataset,
+                            output_name="Poly4Full.sav",
+                            num_iter=1, verbose=10,
+                            Cs=Cs, gammas=gammas, coefs=coefs, deg=4, cvfolds=3)"""
+
+    
+    #Training after performing a pca with a number of components that ensures a retained variance greater than 0.90
+
+    pca_dataset = perform_pca(Full_dataset, auto=True, obj_variance=0.90) 
+
+    hyperparam_search_SVM("random", "linear", pca_dataset,
+                            output_name="LinearPCA.sav",
+                            num_iter=1, verbose=10, 
+                            Cs=Cs, cvfolds=3)
+
+    hyperparam_search_SVM("random", "rbf", pca_dataset,
+                            output_name="RbfPCA.sav",
+                            num_iter=1, verbose=10, 
+                            Cs=Cs, gammas=gammas, cvfolds=3)
+
+    hyperparam_search_SVM("random", "sigmoid", pca_dataset,
+                            output_name="SigmoidPCA.sav",
+                            num_iter=1, verbose=10,
+                            Cs=Cs, gammas=gammas, cvfolds=3)
+
+    hyperparam_search_SVM("random", "poly", pca_dataset,
+                            output_name="Poly1PCA.sav",
+                            num_iter=1, verbose=10,
+                            Cs=Cs, gammas=gammas, coefs=coefs, deg=1, cvfolds=3)
+
+    hyperparam_search_SVM("random", "poly", pca_dataset,
+                            output_name="Poly2PCA.sav",
+                            num_iter=1, verbose=10,
+                            Cs=Cs, gammas=gammas, coefs=coefs, deg=2, cvfolds=3)
+
+    hyperparam_search_SVM("random", "poly", pca_dataset,
+                            output_name="Poly3PCA.sav",
+                            num_iter=1, verbose=10,
+                            Cs=Cs, gammas=gammas, coefs=coefs, deg=3, cvfolds=3)
+    
+    hyperparam_search_SVM("random", "poly", pca_dataset,
+                            output_name="Poly4PCA.sav",
+                            num_iter=1, verbose=10,
+                            Cs=Cs, gammas=gammas, coefs=coefs, deg=4, cvfolds=3)
