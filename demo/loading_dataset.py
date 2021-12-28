@@ -1,0 +1,71 @@
+import sys
+sys.path.insert(1, '../src/helpers')
+sys.path.insert(1, '../src')
+
+from imports import *
+from generate_features import *
+
+x, y = load_dataset('..\data\external\dataset_phishing.csv')
+
+## DATA PREPROCESSING
+
+# Replacing uknown values with the mean of the known values. Just "domain_age" and "registration_length" seems
+# to have unknown values
+known_domain_age = x.loc[x['domain_age'] != -1, 'domain_age']
+mean_domain_age = known_domain_age.sum()/len(known_domain_age)
+
+x.loc[x["domain_age"] == -1, 'domain_age'] = mean_domain_age
+
+known_domain_registration_length = x.loc[x['domain_registration_length'] != -1, 'domain_registration_length']
+mean_domain_registration_length = known_domain_registration_length.sum()/len(known_domain_registration_length)
+
+x.loc[x["domain_registration_length"] == -1, 'domain_registration_length'] = mean_domain_registration_length
+
+
+## DATA CONVERSION
+
+# Converting "status" variable to binary variable
+status_labels = y.copy() # "string" labels
+
+y = y.replace({"phishing" : 1, "legitimate" : 0})
+
+# The "url" feature is not useful sinse all the information that canbe extracted from it is already collect in
+# the rest of columns
+x = x.drop(columns = "url")
+
+x = data_to_float(x)
+
+## DATA STANDARDIZATION
+
+# First we have to determine which features are categorical (Only non-categorical data should be standardized)
+categorical_features = ["ip", "http_in_path", "https_token", "punycode", "port", "tld_in_path", "tld_in_subdomain",\
+"abnormal_subdomain", "prefix_suffix", "random_domain", "shortening_service", "path_extension", "domain_in_brand",\
+"brand_in_subdomain", "brand_in_path", "suspecious_tld", "login_form", "external_favicon", "submit_email", "sfh",\
+"iframe", "popup_window", "onmouseover", "right_clic", "empty_title", "domain_in_title", "domain_with_copyright",\
+"whois_registered_domain", "dns_record", "google_index"]
+
+x_standard = standardize(x, categorical_features = categorical_features)
+
+
+# Feature selection
+best_atributes = select_features(x_standard, y, 15)
+
+#print(x_standard.columns[best_atributes[:15]])
+
+#best_atributes = selection_reg(x_standard, y)
+
+# Fully processed data
+
+# Dataset with the selected features and standardized
+reduced_dataset_standard = x_standard[x_standard.columns[best_atributes[:15]]]
+reduced_dataset_standard = reduced_dataset_standard.assign(status = y.values)
+
+# Dataset with the selected features (no standardized)
+reduced_dataset = x[x_standard.columns[best_atributes[:15]]]
+reduced_dataset = reduced_dataset.assign(status = y.values)
+
+# Dataset without feature selection (standardized)
+Full_dataset = x_standard.assign(status = y.values) #Full dataset (without feature selection)
+
+# PCA performed over the data ()
+pca_dataset = perform_pca(Full_dataset, auto=True, obj_variance=0.90)

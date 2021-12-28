@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(1, 'helpers')
+
 from generate_features import *
 from utils import *
 
@@ -113,30 +116,7 @@ def hyperparam_search_logistic(dataset, num_epochs=10, learning_rates=[0.05], nu
             idx += 1
     
     print("Search finished. Saving model:")
+    print("folds:", best_params["num_folds"], "lr:", best_params["learning_rate"])
     train_logistic_regression_kfold(dataset, k_folds=best_params["num_folds"], num_epochs=num_epochs, learning_rate=best_params["learning_rate"], save=True,
                                         output_name = output_name, folder_path = folder_path)
     print("DONE")
-
-if __name__ == "__main__":
-
-    learning_rates = [0.01, 0.05, 0.1, 0.2, 0.5]
-    number_of_folds = [2, 5, 10, 20, 30]
-
-    learning_rates = [0.01]
-    number_of_folds = [2]
-
-
-    """hyperparam_search_logistic(reduced_dataset_standard, learning_rates=learning_rates, 
-                                number_of_folds=number_of_folds, show_progress=1, 
-                                output_name="reduced", folder_path="../models/LogiRegReduced")"""
-
-    """hyperparam_search_logistic(Full_dataset, learning_rates=learning_rates, 
-                                number_of_folds=number_of_folds, show_progress=1, 
-                                output_name="full", folder_path="../models/LogiRegFull")"""
-
-    
-    pca_dataset = perform_pca(Full_dataset, auto=True, obj_variance=0.90)
-
-    hyperparam_search_logistic(pca_dataset, learning_rates=learning_rates, 
-                                number_of_folds=number_of_folds, show_progress=1, 
-                                output_name="pca", folder_path="../models/LogiRegPCA")
