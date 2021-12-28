@@ -1,0 +1,11 @@
+Python packages required:
+
+ - PyTorch
+ - torchvision
+ - Sklearn
+ - numpy
+ - pandas
+ - seaborn
+ - plotly*
+ - tqdm*
+ - mpl_toolkits*

@@ -103,4 +103,4 @@ def select_features(x, y, k):
 
     indices = fs.scores_.argsort()[::-1]
 
-    return indices
+    return indices[:k]

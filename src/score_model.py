@@ -15,6 +15,10 @@ def score_logistic_torch(dataset, num_folds, show_confusion_matrix = False, outp
 
     testloader = torch.utils.data.DataLoader(
                             dataset.to_numpy())
+
+    print('--------------------------------')
+    print("MODEL Logistic Regression")
+
     start = time.time()
     for fold in range(num_folds):
         filename = folder_path + "/" + output_name + str(fold) +'.sav'
@@ -43,8 +47,6 @@ def score_logistic_torch(dataset, num_folds, show_confusion_matrix = False, outp
                     visualize_confusion_matrix(predictions, dataset.values[:,-1])
 
     # Print accuracy
-    print('--------------------------------')
-    print("MODEL Logistic Regression")
     print('Accuracy: %lf %%' % (accuracy))
     print('Time: %lfs' % (end - start))
     print('--------------------------------')
