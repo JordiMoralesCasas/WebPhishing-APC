@@ -1,0 +1,48 @@
+-----------  LogReg -------------------
+Red  15 |  91.977253 %  |  63.490860s  |  learning_rate: 0.1, 	kfolds: 30
+Red. 30 |  93.429571 %  |  2.532430s   |  learning_rate: 0.1,	kfolds: 2
+Full St |  94.601925 %  |  67.691327s  |  learning_rate: 0.05, 	kfolds: 30
+Full    |  49.991251 %  |  2.624470s   |  learning_rate: 0.01, 	kfolds: 2
+PCA     |  93.665792 %  |  20.286592s  |  learning_rate: 0.05, 	kfolds: 10
+------------  LINEAR  ------------------
+Red  15 |  92.020997 %  |  17.616707s  |  C: 30.724895656154956, kfolds: 3
+Red. 30 |  93.683290 %  |  2.741896s   |  C: 0.5889149368165159, kfolds: 3
+Full St |  94.715661 %  |  4.142055s   |  C: 0.4993382731012802, kfolds: 3
+Full    |      --       |      --      |  
+PCA     |  94.365704 %  |  145.866804s |  C: 94.62290271748324,	 kfolds: 3
+-------------  RBF  ---------------------
+Red  15 |  94.435696 %  |  3.914438s   |  C: 5.8413889806557835,  gamma: 0.084, kernel: rbf, kfolds: 3
+Red. 30 |  93.070866 %  |  10.626565s  |  C: 0.42298926907697143, gamma: 0.22, 	kernel: rbf, kfolds: 3
+Full St |  94.470691 %  |  23.931889s  |  C: 34.65254709150802,   gamma: 0.117, kernel: rbf, kfolds: 3
+Full    |  64.251969 %  |  92.202746s  |  C: 81.3332215424488, 	  gamma: 0.187, kernel: rbf, kfolds: 3
+PCA     |  87.296588 %  |  23.290484s  |  C: 1.084824472475591,   gamma: 0.51, 	kernel: rbf, kfolds: 3
+----------- SIGMOID ---------------------
+Red  15 |  49.615048 %  |  18.478203s  |  C: 1.9060600303122746e-05, coef0: 1, degree: 1, gamma: 5.918, kernel: sigmoid, kfolds: 3
+Red. 30 |  87.007874 %  |  16.357913s  |  C: 0.0005859430227064494,  coef0: 1, degree: 1, gamma: 3.280, kernel: sigmoid, kfolds: 3
+Full St |  86.509186 %  |  25.259425s  |  C: 0.0006276071200232557,  coef0: 1, degree: 1, gamma: 4.597, kernel: sigmoid, kfolds: 3
+Full    |  49.623797 %  |  19.779292s  |  C: 0.003723225980144836,   coef0: 1, degree: 1, gamma: 1.92,  kernel: sigmoid, kfolds: 3
+PCA     |  86.299213 %  |  16.455897s  |  C: 0.0006148182705842685,  coef0: 1, degree: 1, gamma: 7.723, kernel: sigmoid, kfolds: 3
+----------- POLY 1 ----------------------
+Red  15 |  91.985995 %  |  3.750243s   |  C: 0.01880709564735607, coef0: 4.85, degree: 1, gamma: 8.626, kernel: poly, kfolds: 4
+Red. 30 |  93.683290 %  |  2.729270s   |  C: 0.26904276894097207, coef0: 3.18, degree: 1, gamma: 1.819, kernel: poly, kfolds: 3
+Full St |  94.689414 %  |  4.113262s   |  C: 0.15216727902498664, coef0: 0.04, degree: 1, gamma: 2.39,  kernel: poly, kfolds: 3
+Full    |      --       |     --       |  
+PCA     |  94.391951 %  |  264.390094s |  C: 64.42200217449135,	  coef0: 5.88, degree: 1, gamma: 2.694, kernel: poly, kfolds: 3
+----------- POLY 2 ----------------------
+Red  15 |  93.674541 %  |  169.309160s |  C: 0.025084233844991033,   coef0: 6.06, degree: 2, gamma: 8.401, kernel: poly, kfolds: 10
+Red. 30 |  95.336833 %  |  26.807884s  |  C: 0.6879166774048247,     coef0: 5.26, degree: 2, gamma: 0.262, kernel: poly, kfolds: 10
+Full St |  95.616798 %  |  22.299558s  |  C: 0.000277029357932836,   coef0: 4.63, degree: 2, gamma: 5.409, kernel: poly, kfolds: 10
+Full    |      --       |     --       |  
+PCA     |  95.310586 %  |  16.276315s  |  C: 0.0001725847091854454,  coef0: 5.44, degree: 2, gamma: 7.47,  kernel: poly, kfolds: 10
+----------- POLY 3 ----------------------
+Red  15 |  93.394576 %  |  241.422035s |  C: 0.011271048406873603,  coef0: 4.93, degree: 3, gamma: 2.515, kernel: poly, kfolds: 10
+Red. 30 |  95.188101 %  |  14.854173s  |  C: 0.008761422316284174,  coef0: 6.74, degree: 3, gamma: 0.434, kernel: poly, kfolds: 10
+Full St |  95.345582 %  |  22.351425s  |  C: 5.340563084763183,	    coef0: 6.79, degree: 3, gamma: 5.316, kernel: poly, kfolds: 10
+Full    |      --       |     --       |  
+PCA     |  94.575678 %  |  17.853478s  |  C: 0.039359253136468826,  coef0: 8.75, degree: 3, gamma: 4.148, kernel: poly, kfolds: 10
+----------- POLY 4 ----------------------
+Red  15 |  92.003500 %  |  196.755875s |  C: 0.011271048406873603,   coef0: 4.93, degree: 4, gamma: 2.515,  kernel: poly, kfolds: 10
+Red. 30 |  93.735783 %  |  16.249465s  |  C: 0.0002707325278134873,  coef0: 7.25, degree: 4, gamma: 5.168,  kernel: poly, kfolds: 10
+Full St |  95.608049 %  |  27.536939s  |  C: 0.030897845012780853,   coef0: 9.38, degree: 4, gamma: 4.148,  kernel: poly, kfolds: 10
+Full    |  43.595801 %  |  30.366286s  |  C: 0.19151687218866523,    coef0: 4.11, degree: 4, gamma: 2.673,  kernel: poly, kfolds: 10
+PCA     |  94.951881 %  |  18.893580s  |  C: 0.0006448914291846603,  coef0: 5.45, degree: 4, gamma: 3.6432, kernel: poly, kfolds: 10

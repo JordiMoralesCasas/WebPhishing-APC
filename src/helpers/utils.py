@@ -8,7 +8,7 @@ class LogisticRegression(torch.nn.Module):
         outputs = torch.sigmoid(self.linear(x))
         return outputs
 
-# Define logistic function
+
 def logistic_func(x):
     return 1 / (1 + np.exp(-x))
 

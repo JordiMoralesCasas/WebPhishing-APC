@@ -4,65 +4,120 @@ sys.path.insert(1, 'helpers')
 from imports import *
 from generate_features import *
 from utils import *
-
 from pca import *
+from train_models import *
 
-def score_logistic_torch(dataset, num_folds, show_confusion_matrix = False, output_name = "out", folder_path = "../model"):
-    input_dim = dataset.shape[1] # Independent variables 
-    output_dim = 1 # Single binary output 
-
-    preds = np.zeros([dataset.shape[0], num_folds])
-
-    testloader = torch.utils.data.DataLoader(
-                            dataset.to_numpy())
-
+def score_logistic_torch(file, dataset):
+    """
+    Train and score a PyTorch Logistic Regression model, given a model file.
+            Parameters:
+                    file (string): file that contains a saved model
+                    dataset (pandas dataframe): Dataset
+                    show_confusion_matrix (bool): If True, a confusion 
+                        matrix of the dataset is shown.
+            Returns:
+                    accuracy (float): Accuracy of the model
+                    elapsed_time (float): Elapsed time
+    """
+    model_params = pickle.load(open(file, 'rb'))
+    
+    k = model_params["kfolds"]
+    lr = model_params["learning_rate"]
+    
     print('--------------------------------')
     print("MODEL Logistic Regression")
 
     start = time.time()
-    for fold in range(num_folds):
-        filename = folder_path + "/" + output_name + str(fold) +'.sav'
-        model = pickle.load(open(filename, 'rb'))
-
-        with torch.no_grad():
-                # Iterate over the test data and generate predictions
-                for i, data in enumerate(testloader, 0):
+    accuracy = Kfold_logistic_regression(dataset, k_folds=k, learning_rate=lr)
+    elapsed_time = time.time() - start
                     
-                    # Get inputs
-                    inputs = data[:,:-1].float()
-                    targets = data[:, -1].reshape((inputs.shape[0],1)).float()
-                    #print(inputs, targets)
-
-                    # Generate outputs
-                    outputs = model(inputs)
-
-                    # Set total and correct
-                    preds[i, fold] = outputs.round().detach().numpy()[0][0]
-
-    predictions = [np.bincount(preds[i].astype('int')).argmax() for i in range(dataset.shape[0])]
-    accuracy = (dataset.values[:,-1] == predictions).sum()/len(predictions)*100
-
-    end = time.time()
-    if (show_confusion_matrix):
-                    visualize_confusion_matrix(predictions, dataset.values[:,-1])
-
     # Print accuracy
     print('Accuracy: %lf %%' % (accuracy))
-    print('Time: %lfs' % (end - start))
+    print('Time: %lfs' % (elapsed_time))
+    print("Parameters:", model_params)
     print('--------------------------------')
 
+    return accuracy, elapsed_time
 
-def score_sklearn_model(filename, dataset, show_confusion_matrix = False):
-    X = dataset.values[:,:-1]
-    Y = dataset.values[:,-1]
-    model = pickle.load(open(filename, 'rb'))
-    predict = model.predict(X)
+
+def score_sklearn_model(filename, dataset):
+    """
+    Train and score a Scikit-learn SVM model, given a model file.
+            Parameters:
+                    file (string): file that contains a saved model
+                    dataset (pandas dataframe): Dataset
+            Returns:
+                    accuracy (float): Accuracy of the model
+                    elapsed_time (float): Elapsed time
+    """
     
-    if (show_confusion_matrix):
-        visualize_confusion_matrix(predict, Y.flatten())
+    model_params = pickle.load(open(filename, 'rb'))
+    k = model_params["kfolds"]
+
     print('--------------------------------')
     print("MODEL", filename)
-    print('Accuracy: %lf %%' % ((predict == Y.flatten()).sum()/predict.size*100))
-    #print(model.get_params())
+
+    start = time.time()
+    accuracy = Kfold_SVM(dataset, k, model_params)
+    elapsed_time = time.time() - start
+
+    
+    print('Accuracy: %lf %%' % (accuracy*100))
+    print('Time: %lfs' % (elapsed_time))
+    print("Parameters:", model_params)
     print('--------------------------------')
-   
+
+    return accuracy, elapsed_time
+
+
+def predictions_SVM(filename, dataset, confusion_matrix = False):
+    """
+    Trains a SVM model with Kfold and returns the predictions for the whole dataset.
+            Parameters:
+                    file (string): file that contains a saved model
+                    dataset (pandas dataframe): Dataset used for training
+                    confusion_matrix (bool): If True, a confusion matrix will be displayed
+            Returns:
+                    predictions (int list): List with the predictions for each sample     
+    """
+    X = dataset.values[:,:-1]
+    Y = dataset.values[:,-1]
+
+    # Load parameters
+    model_params = pickle.load(open(filename, 'rb'))
+    k = model_params['kfolds']
+    
+    # Get predictions
+    _, predictions = Kfold_SVM(dataset, k, model_params, get_predictions = True)
+
+    if (confusion_matrix):
+        visualize_confusion_matrix(predictions, Y)
+        
+    return predictions
+
+
+def predictions_logistic(filename, dataset, confusion_matrix = False):
+    """
+    Trains a Logistic Regression model with Kfold and returns the predictions for the whole dataset.
+            Parameters:
+                    file (string): file that contains a saved model
+                    dataset (pandas dataframe): Dataset used for training
+                    confusion_matrix (bool): If True, a confusion matrix will be displayed
+            Returns:
+                    predictions (int list): List with the predictions for each sample  
+    """
+    X = dataset.values[:,:-1]
+    Y = dataset.values[:,-1]
+
+    # Load parameters
+    model_params = pickle.load(open(filename, 'rb'))
+    k = model_params['kfolds']
+    
+    # Get predictions
+    _, predictions = Kfold_logistic_regression(dataset, get_predictions = True, k_folds=k,
+                                                learning_rate=model_params["learning_rate"])
+                                                
+    if (confusion_matrix):
+        visualize_confusion_matrix(predictions, Y)
+        
+    return predictions
