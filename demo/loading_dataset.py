@@ -27,7 +27,7 @@ x.loc[x["domain_registration_length"] == -1, 'domain_registration_length'] = mea
 # Converting "status" variable to binary variable
 y = y.replace({"phishing" : 1, "legitimate" : 0})
 
-# The "url" feature is not useful sinse all the information that canbe extracted from it is already collect in
+# The "url" feature is not useful since all the information that can be extracted from it is already collect in
 # the rest of columns
 x = x.drop(columns = "url")
 
@@ -47,12 +47,13 @@ categorical_features = ["ip", "http_in_path", "https_token", "punycode", "port",
 x_standard = standardize(x, categorical_features = categorical_features)
 
 
-# Feature selection
+## FEATURE SELECTION
+# We will do a couple of experiments by selecting the 15 and 30 best features and training some models
 best_atributes15 = select_features(x_standard, y, 15)
 best_atributes30 = select_features(x_standard, y, 30)
-#print(x_standard.columns[best_atributes[:15]])
 
-# Fully processed data
+
+## FINAL DATA
 
 # Dataset with the selected features and standardized
 reduced_dataset_standard15 = x_standard[x_standard.columns[best_atributes15]]
@@ -61,23 +62,9 @@ reduced_dataset_standard15 = reduced_dataset_standard15.assign(status = y.values
 reduced_dataset_standard30 = x_standard[x_standard.columns[best_atributes30]]
 reduced_dataset_standard30 = reduced_dataset_standard30.assign(status = y.values)
 
-
-#best_atributes2 = selection_reg(x_standard, y)
-#reduced_dataset_standard2 = x_standard[x_standard.columns[best_atributes2[:15]]]
-#reduced_dataset_standard2 = reduced_dataset_standard2.assign(status = y.values)
-
-
-# Dataset with the selected features (no standardized)
-reduced_dataset15 = x[x_standard.columns[best_atributes15]]
-reduced_dataset15 = reduced_dataset15.assign(status = y.values)
-
-reduced_dataset30 = x[x_standard.columns[best_atributes15]]
-reduced_dataset30 = reduced_dataset15.assign(status = y.values)
-
-# Dataset without feature selection (standardized)
+# Dataset without feature selection (standardized and non-standardized)
 Full_dataset_standard = x_standard.assign(status = y.values) #Full dataset (without feature selection)
-
 Full_dataset = x.assign(status = y.values) #Full dataset (without feature selection)
 
-# PCA performed over the data ()
+# PCA performed over the data
 pca_dataset = perform_pca(Full_dataset_standard, auto=True, obj_variance=0.90)

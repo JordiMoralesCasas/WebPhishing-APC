@@ -41,7 +41,9 @@ def hyperparam_search_logistic(dataset, learning_rates=[0.05], cvfolds=[10], num
                 best_params["learning_rate"] = lr
                 best_params["kfolds"] = k
             idx += 1
-            
+    
+    print("\nFinal scoring (\"accuracy\"):", max_accuracy, "\n")
+
     if (save):
         #Saving model to pickle file
         pickle.dump(best_params, open('../models/' + output_name, 'wb'))
