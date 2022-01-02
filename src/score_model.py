@@ -19,23 +19,15 @@ def score_logistic_torch(file, dataset):
                     accuracy (float): Accuracy of the model
                     elapsed_time (float): Elapsed time
     """
+    # Load parameters
     model_params = pickle.load(open(file, 'rb'))
-    
     k = model_params["kfolds"]
     lr = model_params["learning_rate"]
     
-    print('--------------------------------')
-    print("MODEL Logistic Regression")
-
+    # Training
     start = time.time()
-    accuracy = Kfold_logistic_regression(dataset, k_folds=k, learning_rate=lr)
+    accuracy, _ = Kfold_logistic_regression(dataset, k_folds=k, learning_rate=lr)
     elapsed_time = time.time() - start
-                    
-    # Print accuracy
-    print('Accuracy: %lf %%' % (accuracy))
-    print('Time: %lfs' % (elapsed_time))
-    print("Parameters:", model_params)
-    print('--------------------------------')
 
     return accuracy, elapsed_time
 
@@ -50,24 +42,15 @@ def score_sklearn_model(filename, dataset):
                     accuracy (float): Accuracy of the model
                     elapsed_time (float): Elapsed time
     """
-    
+    # Load parameters
     model_params = pickle.load(open(filename, 'rb'))
     k = model_params["kfolds"]
 
-    print('--------------------------------')
-    print("MODEL", filename)
-
     start = time.time()
-    accuracy = Kfold_SVM(dataset, k, model_params)
+    accuracy, _ = Kfold_SVM(dataset, k, model_params)
     elapsed_time = time.time() - start
 
-    
-    print('Accuracy: %lf %%' % (accuracy*100))
-    print('Time: %lfs' % (elapsed_time))
-    print("Parameters:", model_params)
-    print('--------------------------------')
-
-    return accuracy, elapsed_time
+    return accuracy, elapsed_time, model_params
 
 
 def predictions_SVM(filename, dataset, confusion_matrix = False):

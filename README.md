@@ -48,27 +48,33 @@ The other method of reducing the dimensionality of the dataset is by performing 
 
 The results regarding precision were very close to the original dataset, but the training time varies greatly depending on the model, in some cases lasting several minutes, and if we also add the time spent doing the PCA we are left with hardly any room for improvement in any case.
 
+### Training
+
+For all the different models, a hyperparameter search has been done, most of them being the result of random searches of 200 iterations each. For the SVM models of 2nd, 3rd and 4th degree, the number of iterations was reduced to 50 because some combinations of hyperparameters caused very long training times.
+
+Also, some cross-validation (K-fold) was introduced for validating the results. For the logistic regression the number of folds was found as part of the hyperparameter search, while for the SVM models it was set from the beginning: The ones with a polynomial kernel of 2nd, 3rd and 4th degree used 10 folds in order to prevent overfitting the data (The accuracy for the test sets was greater than 99%). The rest used 3 folds.
 ### Model summary
+The following 6 models are a selection of the ones with better accuracy and some that have a slightly worse accuracy but are really fast.
 
-The accuracy scores and training times for all the previous experiments are gathered in the *scores.txt* file. Also the same models are saved in the *models* folder and can be loaded using the functions provided (See [Demo](#demo1)).
+(The accuracy scores and training times for all the previous experiments are gathered in the *scores.txt* file. Also, the same models are saved in the *models* folder and can be loaded using the functions provided (See [Demo](#demo1)).)
 
-| Model | Details | Hiperparameters | Accuracy  | Time |
+| Model | Details | <div style="width:220px">Hyperparameters</div> | Accuracy  | Time |
 | -- | -- | -- | -- | -- |
-| Logistic Regression | 30 features (FS) | learning_rate: 0.1,	kfolds: 2 | 93.43 % | 2.5324s |
-| SVM | Linear kernel, full dataset | C: 0.4993382731012802, kfolds: 3 | 94.716 % | 4.1421s |
-| SVM | RBF kernel, 15 features (FS) | C: 5.8413889806557835,  gamma: 0.084, kfolds: 3 | 94.436 % | 3.9144s |
-| SVM | Polynomial kernel (2nd deg.), full dataset  | C: 0.000277029357932836, coef0: 4.63, gamma: 5.409, kfolds: 10 | 95.617 % | 22.2996s |
-| SVM | Polynomial kernel (2nd deg.), PCA  | C: 0.0001725847091854454,  coef0: 5.44, gamma: 7.47, kfolds: 10 | 95.311 % | 16.2763s |
-| SVM | Polynomial kernel (3nd deg.), 30 features (FS) | C: 0.008761422316284174,  coef0: 6.74, gamma: 0.434, kfolds: 10 | 95.188 % | 14.8542s |
+| **Logistic Regression** | 30 features (FS) | <ul><li>**Learning rate**: 0.1</li><li> **CV Folds**: 2 </li></ul> | 93.43 % | 2.5324s |
+| **SVM** | Linear kernel | <ul><li>**C**: 0.49933827310128</li><li>**CV Folds**: 3</li></ul> | 94.716 % | 4.1421s |
+| **SVM** | RBF kernel, 15 features (FS) | <ul><li>**C**: 5.841388980655784</li><li>**Gamma**: 0.084</li><li>**CV Folds**: 3</li></ul> | 94.436 % | 3.9144s |
+| **SVM** | Polynomial kernel (2nd deg.)  | <ul><li>**C**: 0.000277029357933</li><li>**Coef0**: 4.63</li><li>**Gamma**: 5.409</li><li>**CV Folds**: 10</li></ul> | 95.617 % | 22.2996s |
+| **SVM** | Polynomial kernel (2nd deg.), PCA  | <ul><li>**C**: 0.000172584709185</li><li>**Coef0**: 5.44</li><li>**Gamma**: 7.47</li><li>**CV Folds**: 10</li></ul> | 95.311 % | 16.2763s |
+| **SVM** | Polynomial kernel (3nd deg.), 30 features (FS) | <ul><li>**C**: 0.008761422316284</li><li>**Coef0**: 6.74</li><li>**Gamma**: 0.434 </li><li>**CV Folds**: 10</li></ul> | 95.188 % | 14.8542s |
 
 ## <a name="demo1"></a>Demo 
-There are already trained models saved in this repository. They can be loaded by executing the following command, alongside with their score:
-
-``` python demo/scoring.py ```
-
-For training and saving new models, you can run this script:
+For training and saving new models, follow the example in *demo/training.py*. By running the next command you can create some *Test* models:
 
 ``` python demo/train_models.py ```
+
+There are already trained models saved in this repository. The example provided in *demo/scoring.py*  show how to do this. Use the following command to score the *Test* models:
+
+``` python demo/scoring.py ```
 
 ## Conclusions
 [comment]: <> (El millor model que s'ha aconseguit ha estat... En comparació amb l'estat de l'art i els altres treballs que hem analitzat....)
