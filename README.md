@@ -15,6 +15,29 @@ The main goal is to train a supervised learning model that can detect if a websi
 
 ## Exploratory Data Analysis
 
+To gain an overview of the dataset firstly I did a correlation analysis in order to find some clues about which features are the most important. The following image shows the 15 better correlated with the objective variable:
+<p align="center">
+<img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/correlation_15_best_attributes.png?raw=true"width="450" />
+</p>
+
+As we can see, the most correlated features would be *google_index*, *page_rank*, *nb_ww*, *domain_age* and *ratio_digits_url*. Let's plot them and try to conclude something:
+<p float="left">
+<img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/google_index.png?raw=true"width="290" />
+<img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/page_rank.png?raw=true"width="280" />
+<img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/nb_www.png?raw=true"width="290" />
+</p>
+
+<p align="center">
+<img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/domain_age.png?raw=true"width="314" />
+<img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/ratio_digits_url.png?raw=true"width="300" />
+</p>
+
+
+We can also do a PCA (More on that later) and represent the first two principal components.
+
+<p align="center">
+<img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/PCAVisualization2D.png?raw=true"width="850" />
+</p>
 
 ## Models that will be explored
 [comment]: <> (Durant aquesta pràctica hem realitzat diferents experiments.)
@@ -58,6 +81,7 @@ The results regarding scores were very close to the standardized dataset for the
 For the case with 95%, althought there are some problems with the training times for some models, others not only are relatively fast, but also have accuracy scores higher than the standardized dataset model.
 
 
+
 ## Training
 
 For all the different models an hyperparameter search has been done, most of them being the result of random searches of 200 iterations each. For the SVM models of 2nd, 3rd and 4th degree, the number of iterations was reduced to 50 because some combinations of hyperparameters caused very long training times.
@@ -65,7 +89,7 @@ For all the different models an hyperparameter search has been done, most of the
 Also, some cross-validation (K-fold) was introduced for validating the results. For the logistic regression the number of folds was found as part of the hyperparameter search, while for the SVM models it was set from the beginning: The ones with a polynomial kernel of 2nd, 3rd and 4th degree used 10 folds in order to prevent overfitting the data (The accuracy for the test sets was greater than 99%). The rest used 3 folds.
 
 ## Model summary
-The following 6 models are a selection of the most relevant models that I have found:
+The following 7 models are a selection of the most relevant models that I have found.
 
 The first three, although with a slightly worse accuracy than the rest, have a very fast training time. The rest are slower (but still fast compared to other models) but have great accuracy scores.
 
@@ -73,13 +97,13 @@ The accuracy scores and training times for all the previous experiments are gath
 
 | Model | <div style="width:100px">Details</div> | <div style="width:220px">Hyperparameters</div> | Accuracy | <div style="width:80px">Recall</div> |F1-score | Time |
 | -- | -- | -- | -- | -- | -- | -- |
-| **Logistic Regression** | 30 features (FS) | <ul><li>**Learning rate**: 0.1</li><li> **CV Folds**: 2 </li></ul> | 93.43 % | 93.1934 %  |  0.935206 | 2.5324s |
-| **SVM** | Linear kernel | <ul><li>**C**: 0.49933827310128</li><li>**CV Folds**: 3</li></ul> | 94.716 % | 94.8562 %  |  0.947052 | 4.1421s |
-| **SVM** | RBF kernel, 15 features (FS) | <ul><li>**C**: 5.841388980655784</li><li>**Gamma**: 0.084</li><li>**CV Folds**: 3</li></ul> | 94.436 % | 93.9424 %  |  0.944656 | 3.9144s |
-| **SVM** | Polynomial kernel (2nd deg.)  | <ul><li>**C**: 0.000277029357933</li><li>**Coef0**: 4.63</li><li>**Gamma**: 5.409</li><li>**CV Folds**: 10</li></ul> | 95.617 % |95.9644 %  |  0.956012 | 22.2996s |
-| **SVM** | Polynomial kernel (2nd deg.), PCA (95% explained variance)  | <ul><li>**C**: 0.000208323428089</li><li>**Coef0**: 7.88</li><li>**Gamma**: 4.22</li><li>**CV Folds**: 10</li></ul> | 95.932 % |96.2713 %  |  0.959198 | 35.3752s |
-| **SVM** | Polynomial kernel (2nd deg.), PCA (90% explained variance) | <ul><li>**C**: 0.000172584709185</li><li>**Coef0**: 5.44</li><li>**Gamma**: 7.47</li><li>**CV Folds**: 10</li></ul> | 95.311 % |95.7489 %  |  0.953695 | 16.2763s |
-| **SVM** | Polynomial kernel (3nd deg.), 30 features (FS) | <ul><li>**C**: 0.008761422316284</li><li>**Coef0**: 6.74</li><li>**Gamma**: 0.434 </li><li>**CV Folds**: 10</li></ul> | 95.188 % |95.428 %  |  0.951746 | 14.8542s |
+| **Logistic Regression** | 30 features (FS) | <ul><li>**Learning rate**: 0.1</li><li> **CV Folds**: 2 </li></ul> | 93.43% | 93.1934%  |  0.935206 | 2.5324s |
+| **SVM** | Linear kernel | <ul><li>**C**: 0.49933827310128</li><li>**CV Folds**: 3</li></ul> | 94.716% | 94.8562%  |  0.947052 | 4.1421s |
+| **SVM** | RBF kernel, 15 features (FS) | <ul><li>**C**: 5.841388980655784</li><li>**Gamma**: 0.084</li><li>**CV Folds**: 3</li></ul> | 94.436% | 93.9424%  |  0.944656 | 3.9144s |
+| **SVM** | Polynomial kernel (2nd deg.)  | <ul><li>**C**: 0.000277029357933</li><li>**Coef0**: 4.63</li><li>**Gamma**: 5.409</li><li>**CV Folds**: 10</li></ul> | 95.617% | 95.9644%  | 0.956012 | 22.2996s |
+| **SVM** | Polynomial kernel (2nd deg.), PCA (95% explained variance)  | <ul><li>**C**: 0.000208323428089</li><li>**Coef0**: 7.88</li><li>**Gamma**: 4.22</li><li>**CV Folds**: 10</li></ul> | 95.932% |96.2713%  |  0.959198 | 35.3752s |
+| **SVM** | Polynomial kernel (2nd deg.), PCA (90% explained variance) | <ul><li>**C**: 0.000172584709185</li><li>**Coef0**: 5.44</li><li>**Gamma**: 7.47</li><li>**CV Folds**: 10</li></ul> | 95.311% |95.7489%  |  0.953695 | 16.2763s |
+| **SVM** | Polynomial kernel (3nd deg.), 30 features (FS) | <ul><li>**C**: 0.008761422316284</li><li>**Coef0**: 6.74</li><li>**Gamma**: 0.434 </li><li>**CV Folds**: 10</li></ul> | 95.188% |95.428%  |  0.951746 | 14.8542s |
 
 ## <a name="demo1"></a>Demo 
 For training and saving new models, follow the example in *demo/training.py*. By running the next command you can create some *Test* models:
@@ -104,7 +128,5 @@ There are already trained models saved in this repository. The example provided 
 
 
 
-[comment]: <> (## Idees per treballar en un futur)
-[comment]: <> (Crec que seria interesant indagar més en...)
 [comment]: <> (## Llicencia)
 [comment]: <> (El projecte s’ha desenvolupat sota llicència ZZZz.)
