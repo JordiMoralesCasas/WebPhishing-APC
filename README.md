@@ -15,28 +15,39 @@ The main goal is to train a supervised learning model that can detect if a websi
 
 ## Exploratory Data Analysis
 
-To gain an overview of the dataset firstly I did a correlation analysis in order to find some clues about which features are the most important. The following image shows the 15 better correlated with the objective variable:
+To gain an overview of the dataset and it's features, we can do a correlation analysis. This way, we can find those attributes that describe better how the data behaves. The following image shows the 15 better correlated with the objective variable:
 <p align="center">
 <img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/correlation_15_best_attributes.png?raw=true"width="450" />
 </p>
 
-As we can see, the most correlated features would be *google_index*, *page_rank*, *nb_ww*, *domain_age* and *ratio_digits_url*. Let's plot them and try to conclude something:
-<p float="left">
-<img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/google_index.png?raw=true"width="290" />
-<img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/page_rank.png?raw=true"width="280" />
-<img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/nb_www.png?raw=true"width="290" />
+According to the graph, the most correlated features are *google_index*, *page_rank*, *nb_ww*, *domain_age* and *ratio_digits_url*. Let's plot them and try to conclude something:
+<p align="center">
+<img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/google_index.png?raw=true"width="350" />
+<img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/nb_www.png?raw=true"width="350" />
+</p>
+<p align="center">
+<img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/page_rank.png?raw=true"width="350" />
+<img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/domain_age.png?raw=true"width="350" />
 </p>
 
 <p align="center">
-<img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/domain_age.png?raw=true"width="314" />
-<img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/ratio_digits_url.png?raw=true"width="300" />
+<img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/ratio_digits_url.png?raw=true"width="350" />
 </p>
 
+Just by looking at categorical features like *google_index* and *nb_www* it is possible to do a pretty accurate guess about what class a certain sample pertains to. Numerical attributes like *page_rank*, *domain_age* or *ratio_digits_url*, although in the boxplot the two classes overlap, we can see how most of the legitimate samples are closer to their mean than the phishing samples are.
 
-We can also do a PCA (More on that later) and represent the first two principal components.
+We can also do a PCA (more on that later) and represent the first two principal components. This way we can check if the previous suppositions have any sense when we take into account all the features from the dataset.
 
 <p align="center">
 <img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/PCAVisualization2D.png?raw=true"width="850" />
+</p>
+
+As we thought, the legitimate samples tend to be closer (have less variance) than the phishing ones. If we do the same with 3 components, the results are the same.
+
+<p align="center">
+<img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/PCAVisualization3D_1.png?raw=true"width="350" />
+<img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/PCAVisualization3D_2.png?raw=true"width="350" />
+<img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/PCAVisualization3D_3.png?raw=true"width="350" />
 </p>
 
 ## Models that will be explored
