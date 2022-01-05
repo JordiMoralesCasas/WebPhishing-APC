@@ -9,7 +9,8 @@ x, y = load_dataset('..\data\external\dataset_phishing.csv')
 
 ## DATA PREPROCESSING
 
-# Replacing uknown values with the mean of the known values. Just "domain_age" and "registration_length" seems
+# Replacing uknown values with the mean of the known values. Just "domain_age" and 
+# "registration_length" seems
 # to have unknown values
 known_domain_age = x.loc[x['domain_age'] != -1, 'domain_age']
 mean_domain_age = known_domain_age.sum()/len(known_domain_age)
