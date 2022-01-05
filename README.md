@@ -9,11 +9,11 @@ The dataset consists of 11430 unique samples with 89 attributes:
   - **1** that contains the whole URL.
   - **55** are numerical data, most in the form of counts or averages.
 
-### Objective
+## Objective
 The main goal is to train a supervised learning model that can detect if a website is being used for phishing or not.
 
 
-### Exploratory Data Analysis
+## Exploratory Data Analysis
 
 
 ## Models that will be explored
@@ -29,7 +29,7 @@ So far I have used two different algorithms for the analysis:
     - Sigmoid kernel.
     - Polynomial kernel (up to 4th degree).
 
-### Preprocessing
+## Preprocessing
 [comment]: <> (Quines proves hem realitzat que tinguin a veure amb el pre-processat? com han afectat als resultats?)
 The initial dataset didn't required a lot of preprocessingn regarding missing values or useless data. The only feature that had to be removed was the *URL* since all the information that can be extracted from it is already collected in the rest of columns.
 
@@ -58,13 +58,13 @@ The results regarding scores were very close to the standardized dataset for the
 For the case with 95%, althought there are some problems with the training times for some models, others not only are relatively fast, but also have accuracy scores higher than the standardized dataset model.
 
 
-### Training
+## Training
 
 For all the different models an hyperparameter search has been done, most of them being the result of random searches of 200 iterations each. For the SVM models of 2nd, 3rd and 4th degree, the number of iterations was reduced to 50 because some combinations of hyperparameters caused very long training times.
 
 Also, some cross-validation (K-fold) was introduced for validating the results. For the logistic regression the number of folds was found as part of the hyperparameter search, while for the SVM models it was set from the beginning: The ones with a polynomial kernel of 2nd, 3rd and 4th degree used 10 folds in order to prevent overfitting the data (The accuracy for the test sets was greater than 99%). The rest used 3 folds.
 
-### Model summary
+## Model summary
 The following 6 models are a selection of the most relevant models that I have found:
 
 The first three, although with a slightly worse accuracy than the rest, have a very fast training time. The rest are slower (but still fast compared to other models) but have great accuracy scores.
@@ -93,7 +93,7 @@ There are already trained models saved in this repository. The example provided 
 ## Conclusions
 [comment]: <> (El millor model que s'ha aconseguit ha estat... En comparació amb l'estat de l'art i els altres treballs que hem analitzat....)
 
-## Ideas to work in the future (Provisional title)
+## Ideas to work in the future
  - Test the difference between normalizing or standardizing the data.
 
  - Work with different score functions in the feature selection.
