@@ -1,55 +1,72 @@
 --------------- Logistic Regression ---------------------------------
- 15 features 	  |  91.977253 %  |  63.490860s  |  learning_rate: 0.1,   kfolds: 30
- 30 features 	  |  93.429571 %  |  2.532430s   |  learning_rate: 0.1,	  kfolds: 2
- Standardized 	  |  94.601925 %  |  67.691327s  |  learning_rate: 0.05,  kfolds: 30
- Non-Standardized |  49.991251 %  |  2.624470s   |  learning_rate: 0.01,  kfolds: 2
- PCA     	  |  93.665792 %  |  20.286592s  |  learning_rate: 0.05,  kfolds: 10
+   		  |   ACCURACY    |    RECALL	  |   F1-SCORE   |     TIME	|    HYPERPARAMETERS
+ 15 features      |  91.986002 %  |  92.300962 %  |  0.92035244  |  63.490860s  |  learning_rate: 0.1,   kfolds: 30
+ 30 features      |  93.51706  %  |  93.193351 %  |  0.93520632  |  2.532430s   |  learning_rate: 0.1,	  kfolds: 2
+ Standardized     |  94.540682 %  |  94.470691 %  |  0.94727608  |  67.691327s  |  learning_rate: 0.05,  kfolds: 30
+ Non-Standardized |  50.787402 %  |  3.0621172 %  |  0.05937235  |  2.624470s   |  learning_rate: 0.01,  kfolds: 2
+ PCA 90%  	  |  93.578303 %  |  93.368329 %  |  0.93753843  |  20.286592s  |  learning_rate: 0.05,  kfolds: 10
+ PCA 95%  	  |  94.584427 %  |  94.488189 %  |  0.94736842  |  114.35413s  |  learning_rate: 0.05,  kfolds: 30
 
 -------------- SVM Linear Kernel ------------------------------------
- 15 features 	  |  92.020997 %  |  17.616707s  |  C: 30.724895656154956,  kfolds: 3
- 30 features 	  |  93.683290 %  |  2.741896s   |  C: 0.5889149368165159,  kfolds: 3
- Standardized 	  |  94.715661 %  |  4.142055s   |  C: 0.4993382731012802,  kfolds: 3
- Non-Standardized |      --       |      --      |  
- PCA     	  |  94.365704 %  |  145.866804s |  C: 94.62290271748324,   kfolds: 3
+   		  |   ACCURACY    |    RECALL	  |   F1-SCORE   |     TIME	|    HYPERPARAMETERS
+ 15 features 	  |  92.020997 %  |  91.801078 %  |  0.92040832  |  17.616707s  |  C: 30.724895656154956,  kfolds: 3
+ 30 features 	  |  93.683290 %  |  93.590643 %  |  0.93688852  |  2.741896s   |  C: 0.5889149368165159,  kfolds: 3
+ Standardized 	  |  94.715661 %  |  94.856184 %  |  0.94705247  |  4.142055s   |  C: 0.4993382731012802,  kfolds: 3
+ Non-Standardized |      --       |      --       |      --      |      --      |
+ PCA 90%     	  |  94.365704 %  |  94.291468 %  |  0.94134435  |  145.8668s   |  C: 94.62290271748324,   kfolds: 3
+ PCA 95%     	  |  94.733158 %  |  94.863173 %  |  0.94725333  |  41.12212s   |  C: 10.051141542215317,  kfolds: 3
 
 -------------- SVM RBF Kernel ---------------------------------------
- 15 features	  |  94.435696 %  |  3.914438s   |  C: 5.8413889806557835,   gamma: 0.084,  kernel: rbf,  kfolds: 3
- 30 features 	  |  93.070866 %  |  10.626565s  |  C: 0.42298926907697143,  gamma: 0.22,   kernel: rbf,  kfolds: 3
- Standardized 	  |  94.470691 %  |  23.931889s  |  C: 34.65254709150802,    gamma: 0.117,  kernel: rbf,  kfolds: 3
- Non-Standardized |  64.251969 %  |  92.202746s  |  C: 81.3332215424488,     gamma: 0.187,  kernel: rbf,  kfolds: 3
- PCA    	  |  87.296588 %  |  23.290484s  |  C: 1.084824472475591,    gamma: 0.51,   kernel: rbf,  kfolds: 3
+   		  |   ACCURACY    |    RECALL	  |   F1-SCORE   |     TIME	|    HYPERPARAMETERS
+ 15 features	  |  94.435696 %  |  93.942366 %  |  0.94465575  |  3.914438s   |  C: 5.8413889806557835,   gamma: 0.084,  kfolds: 3
+ 30 features 	  |  93.070866 %  |  89.874014 %  |  0.93337318  |  10.626565s  |  C: 0.42298926907697143,  gamma: 0.22,   kfolds: 3
+ Standardized 	  |  94.470691 %  |  92.168628 %  |  0.94617025  |  23.931889s  |  C: 34.65254709150802,    gamma: 0.117,  kfolds: 3
+ Non-Standardized |  64.251969 %  |  100.0  %     |  0.44352516  |  92.202746s  |  C: 81.3332215424488,     gamma: 0.187,  kfolds: 3
+ PCA 90%    	  |  87.296588 %  |  93.719518 %  |  0.86441953  |  23.290484s  |  C: 1.084824472475591,    gamma: 0.51,   kfolds: 3
+ PCA 95%    	  |  95.249344 %  |  93.787622 %  |  0.95328299  |  24.402981s  |  C: 5.8413889806557835,   gamma: 0.084,  kfolds: 3
+
 
 ------------- SVM SIGMOID Kernel ------------------------------------
- 15 features 	  |  49.615048 %  |  18.478203s  |  C: 1.9060600303122746e-05,  coef0: 1,  degree: 1,  gamma: 5.918,  kernel: sigmoid,  kfolds: 3
- 30 features 	  |  87.007874 %  |  16.357913s  |  C: 0.0005859430227064494,   coef0: 1,  degree: 1,  gamma: 3.280,  kernel: sigmoid,  kfolds: 3
- Standardized 	  |  86.509186 %  |  25.259425s  |  C: 0.0006276071200232557,   coef0: 1,  degree: 1,  gamma: 4.597,  kernel: sigmoid,  kfolds: 3
- Non-Standardized |  49.623797 %  |  19.779292s  |  C: 0.003723225980144836,    coef0: 1,  degree: 1,  gamma: 1.92,   kernel: sigmoid,  kfolds: 3
- PCA     	  |  86.299213 %  |  16.455897s  |  C: 0.0006148182705842685,   coef0: 1,  degree: 1,  gamma: 7.723,  kernel: sigmoid,  kfolds: 3
+   		  |   ACCURACY    |    RECALL	  |   F1-SCORE   |     TIME	|    HYPERPARAMETERS
+ 15 features 	  |  49.615048 %  |  16.474190 %  |  0.22050471  |  18.478203s  |  C: 1.9060600303122746e-05,  gamma: 5.918,  kfolds: 3
+ 30 features 	  |  87.007874 %  |  85.593447 %  |  0.87263640  |  16.357913s  |  C: 0.0005859430227064494,   gamma: 3.280,  kfolds: 3
+ Standardized 	  |  86.509186 %  |  86.729166 %  |  0.86473217  |  25.259425s  |  C: 0.0006276071200232557,   gamma: 4.597,  kfolds: 3
+ Non-Standardized |  49.623797 %  |  66.473923 %  |  0.44260339  |  19.779292s  |  C: 0.003723225980144836,    gamma: 1.92,   kfolds: 3
+ PCA 90%     	  |  86.299213 %  |  85.690900 %  |  0.87136349  |  16.455897s  |  C: 0.0006148182705842685,   gamma: 7.723,  kfolds: 3
+ PCA 95%     	  |  86.605424 %  |  86.866793 %  |  0.86559872  |  16.455897s  |  C: 0.0008966501674699601,   gamma: 7.842,  kfolds: 3
 
 ------------- SVM POLYNOMIAL (1st degree) Kernel ---------------------
- 15 features 	  |  91.985995 %  |  3.750243s   |  C: 0.01880709564735607,  coef0: 4.85,  degree: 1,  gamma: 8.626,  kernel: poly,  kfolds: 4
- 30 features 	  |  93.683290 %  |  2.729270s   |  C: 0.26904276894097207,  coef0: 3.18,  degree: 1,  gamma: 1.819,  kernel: poly,  kfolds: 3
- Standardized 	  |  94.689414 %  |  4.113262s   |  C: 0.15216727902498664,  coef0: 0.04,  degree: 1,  gamma: 2.39,   kernel: poly,  kfolds: 3
- Non-Standardized |      --       |     --       |  
- PCA  	  	  |  94.391951 %  |  264.390094s |  C: 64.42200217449135,    coef0: 5.88,  degree: 1,  gamma: 2.694,  kernel: poly,  kfolds: 3
+   		  |   ACCURACY    |    RECALL	  |   F1-SCORE   |    TIME      |    HYPERPARAMETERS
+ 15 features 	  |  91.985995 %  |  91.752603 %  |  0.92007804  |  3.750243s   |  C: 0.01880709564735607,  coef0: 4.85,  degree: 1,  gamma: 8.626,  kfolds: 4
+ 30 features 	  |  93.683290 %  |  93.620898 %  |  0.93686407  |  2.729270s   |  C: 0.26904276894097207,  coef0: 3.18,  degree: 1,  gamma: 1.819,  kfolds: 3
+ Standardized 	  |  94.689414 %  |  94.949274 %  |  0.94672321  |  4.113262s   |  C: 0.15216727902498664,  coef0: 0.04,  degree: 1,  gamma: 2.39,   kfolds: 3
+ Non-Standardized |      --       |     --        |      --      |      --      |  
+ PCA 90% 	  |  94.391951 %  |  94.286283 %  |  0.94087917  |  264.39009s  |  C: 64.42200217449135,    coef0: 5.88,  degree: 1,  gamma: 2.694,  kfolds: 3
+ PCA 95% 	  |  94.741907 %  |  94.849447 %  |  0.94735660  |  636.43365s  |  C: 35.99073262329253,    coef0: 4.0,   degree: 1,  gamma: 6.726,  kfolds: 3
 
 ----------- SVM POLYNOMIAL (2st degree) Kernel -----------------------
- 15 features 	  |  93.674541 %  |  169.309160s |  C: 0.025084233844991033,   coef0: 6.06,  degree: 2,  gamma: 8.401,  kernel: poly,  kfolds: 10
- 30 features 	  |  95.336833 %  |  26.807884s  |  C: 0.6879166774048247,     coef0: 5.26,  degree: 2,  gamma: 0.262,  kernel: poly,  kfolds: 10
- Standardized 	  |  95.616798 %  |  22.299558s  |  C: 0.000277029357932836,   coef0: 4.63,  degree: 2,  gamma: 5.409,  kernel: poly,  kfolds: 10
- Non-Standardized |      --       |     --       |  
- PCA  	          |  95.310586 %  |  16.276315s  |  C: 0.0001725847091854454,  coef0: 5.44,  degree: 2,  gamma: 7.47,   kernel: poly,  kfolds: 10
+   		  |   ACCURACY    |    RECALL	  |   F1-SCORE   |     TIME	|    HYPERPARAMETERS
+ 15 features 	  |  93.674541 %  |  93.277081 %  |  0.93700293  |  169.30916s  |  C: 0.025084233844991033,  coef0: 6.06,  degree: 2,  gamma: 8.401,  kfolds: 10
+ 30 features 	  |  95.336833 %  |  95.562494 %  |  0.95322956  |  26.807884s  |  C: 0.6879166774048247,    coef0: 5.26,  degree: 2,  gamma: 0.262,  kfolds: 10
+ Standardized 	  |  95.616798 %  |  95.964432 %  |  0.95601211  |  22.299558s  |  C: 0.000277029357932836,  coef0: 4.63,  degree: 2,  gamma: 5.409,  kfolds: 10
+ Non-Standardized |      --       |      --       |      --      |      --      |
+ PCA 90%          |  95.310586 %  |  95.748882 %  |  0.95369459  |  16.276315s  |  C: 0.0001725847091854454,   coef0: 5.44,  degree: 2,  gamma: 7.47,   kfolds: 10
+ PCA 95%          |  95.931759 %  |  96.271256 %  |  0.95919775  |  35.3752s    |  C: 0.00020832342808947742,  coef0: 7.88,  degree: 2,  gamma: 4.22,   kfolds: 10
 
 ----------- SVM POLYNOMIAL (3st degree) Kernel -----------------------
- 15 features 	  |  93.394576 %  |  241.422035s |  C: 0.011271048406873603,  coef0: 4.93,  degree: 3,  gamma: 2.515,  kernel: poly,  kfolds: 10
- 30 features 	  |  95.188101 %  |  14.854173s  |  C: 0.008761422316284174,  coef0: 6.74,  degree: 3,  gamma: 0.434,  kernel: poly,  kfolds: 10
- Standardized 	  |  95.345582 %  |  22.351425s  |  C: 5.340563084763183,     coef0: 6.79,  degree: 3,  gamma: 5.316,  kernel: poly,  kfolds: 10
- Non-Standardized |      --       |     --       |  
- PCA     	  |  94.575678 %  |  17.853478s  |  C: 0.039359253136468826,  coef0: 8.75,  degree: 3,  gamma: 4.148,  kernel: poly,  kfolds: 10
+   		  |   ACCURACY    |    RECALL	  |   F1-SCORE   |     TIME	|    HYPERPARAMETERS
+ 15 features 	  |  93.394576 %  |  92.986451 %  |  0.93426585  |  241.42204s  |  C: 0.011271048406873603,  coef0: 4.93,  degree: 3,  gamma: 2.515,  kfolds: 10
+ 30 features 	  |  95.188101 %  |  95.427957 %  |  0.95174561  |  14.854173s  |  C: 0.008761422316284174,  coef0: 6.74,  degree: 3,  gamma: 0.434,  kfolds: 10
+ Standardized 	  |  95.345582 %  |  95.471982 %  |  0.95337684  |  22.351425s  |  C: 5.340563084763183,     coef0: 6.79,  degree: 3,  gamma: 5.316,  kfolds: 10
+ Non-Standardized |      --       |     --        |      --      |      --      |
+ PCA 90%     	  |  94.575678 %  |  94.598379 %  |  0.94324023  |  17.853478s  |  C: 0.039359253136468826,  coef0: 8.75,  degree: 3,  gamma: 4.148,  kfolds: 10
+ PCA 95%     	  |  95.1618548 % |  95.352943 %  |  0.95156070  |  42.168675s  |  C: 0.01042972703119559,   coef0: 1.41,  degree: 3,  gamma: 5.798,  kfolds: 10
 
 ----------- SVM POLYNOMIAL (4st degree) Kernel -----------------------
- 15 features	  |  92.003500 %  |  196.755875s |  C: 0.011271048406873603,   coef0: 4.93,  degree: 4,  gamma: 2.515,  kernel: poly,  kfolds: 10
- 30 features	  |  93.735783 %  |  16.249465s  |  C: 0.0002707325278134873,  coef0: 7.25,  degree: 4,  gamma: 5.168,  kernel: poly,  kfolds: 10
- Standardized 	  |  95.608049 %  |  27.536939s  |  C: 0.030897845012780853,   coef0: 9.38,  degree: 4,  gamma: 4.148,  kernel: poly,  kfolds: 10
- Non-Standardized |  43.595801 %  |  30.366286s  |  C: 0.19151687218866523,    coef0: 4.11,  degree: 4,  gamma: 2.673,  kernel: poly,  kfolds: 10
- PCA  	          |  94.951881 %  |  18.893580s  |  C: 0.0006448914291846603,  coef0: 5.45,  degree: 4,  gamma: 3.6432, kernel: poly,  kfolds: 10
+   		  |   ACCURACY    |    RECALL	  |   F1-SCORE   |     TIME	|    HYPERPARAMETERS
+ 15 features	  |  92.003500 %  |  91.691493 %  |  0.92021860  |  196.75588s  |  C: 0.011271048406873603,   coef0: 4.93,  degree: 4,  gamma: 2.515,  kfolds: 10
+ 30 features	  |  93.735783 %  |  94.119233 %  |  0.93696985  |  16.249465s  |  C: 0.0002707325278134873,  coef0: 7.25,  degree: 4,  gamma: 5.168,  kfolds: 10
+ Standardized 	  |  95.608049 %  |  96.172220 %  |  0.95581098  |  27.536939s  |  C: 0.030897845012780853,   coef0: 9.38,  degree: 4,  gamma: 4.148,  kfolds: 10
+ Non-Standardized |  43.595801 %  |  46.137063 %  |  0.58084541  |  30.366286s  |  C: 0.19151687218866523,    coef0: 4.11,  degree: 4,  gamma: 2.673,  kfolds: 10
+ PCA 90%          |  94.951881 %  |  95.412851 %  |  0.94747010  |  18.893580s  |  C: 0.0006448914291846603,  coef0: 5.45,  degree: 4,  gamma: 3.6432, kfolds: 10
+ PCA 95%          |  94.301837 %  |  95.692404 %  |  0.95279969  |  8.7401831s  |  C: 4.01959766975831e-05,   coef0: 8.77,  degree: 4,  gamma: 3.053,  kfolds: 10

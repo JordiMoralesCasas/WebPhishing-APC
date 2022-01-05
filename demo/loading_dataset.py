@@ -67,4 +67,9 @@ Full_dataset_standard = x_standard.assign(status = y.values) #Full dataset (with
 Full_dataset = x.assign(status = y.values) #Full dataset (without feature selection)
 
 # PCA performed over the data
-pca_dataset = perform_pca(Full_dataset_standard, auto=True, obj_variance=0.90)
+
+# 90% explained variance
+pca_dataset90 = perform_pca(Full_dataset_standard, auto=True, obj_variance=0.90)
+
+# 95% explained variance
+pca_dataset95 = perform_pca(Full_dataset_standard, auto=True, obj_variance=0.95)

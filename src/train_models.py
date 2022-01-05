@@ -9,14 +9,17 @@ def Kfold_logistic_regression(dataset, k_folds=2, num_epochs=5, learning_rate=0.
     """
     Train a PyTorch Logistic Regression model by doing a KFold, given a model file.
             Parameters:
-                     dataset (pandas dataframe): Dataset
-                     k_folds (int): Number of folds.
-                     num_epochs (int): Number of epochs during the training
-                     learning_rate (float): Learning rate
-                     get_predictions (bool): If True, the predictions for all the dataset will be
-                        calculated for each fold and the combined predicted is returned
+                    dataset (pandas dataframe): Dataset
+                    k_folds (int): Number of folds.
+                    num_epochs (int): Number of epochs during the training
+                    learning_rate (float): Learning rate
+                    get_predictions (bool): If True, the predictions for all the dataset will be
+                       calculated for each fold and the combined predicted is returned
             Returns:
-                avg_accuracy (float): Average accuracy of the trained model
+                    predictions (int list): List with the predictions for each sample. Only if get_predictions is True
+                    avg_accuracy (float): Average accuracy of the trained model
+                    avg_recall (float): Recall score (Ability of the classifier to find all the positive samples)
+                    avg_f1 (float): F1 score or F-measure. Harmonic mean of the precision 
     """
     X = dataset.values[:,:-1]
     Y = dataset.values[:,-1]
@@ -37,6 +40,8 @@ def Kfold_logistic_regression(dataset, k_folds=2, num_epochs=5, learning_rate=0.
     kfold = KFold(n_splits=k_folds, shuffle=True)
 
     accuracies = []
+    recalls = []
+    f1_scores = []
     for fold, (train_ids, test_ids) in enumerate(kfold.split(dataset)):
         # Sample elements randomly from a given list of ids, no replacement.
         train_subsampler = torch.utils.data.SubsetRandomSampler(train_ids)
@@ -76,7 +81,7 @@ def Kfold_logistic_regression(dataset, k_folds=2, num_epochs=5, learning_rate=0.
                 optimizer.step()
                 
         # Evaluation for this fold
-        correct, total = 0, 0
+        correct, total, true_positive, false_negative = 0, 0, 0, 0
         with torch.no_grad():
             # Iterate over the test data and generate predictions
             for i, data in enumerate(testloader, 0):
@@ -91,7 +96,15 @@ def Kfold_logistic_regression(dataset, k_folds=2, num_epochs=5, learning_rate=0.
                 total += targets.size(0)
                 correct += np.sum(outputs.round().detach().numpy() == targets.detach().numpy())
 
-            accuracies.append(100.0 * (correct / total))
+                # Get number of true positive and false negative
+                for i in range(len(targets.detach().numpy())):
+                    if (targets.detach().numpy()[i] == 1 and outputs.round().detach().numpy()[i] == 1):
+                        true_positive += 1
+                    if (targets.detach().numpy()[i] == 1 and outputs.round().detach().numpy()[i] == 0):
+                        false_negative += 1
+                
+            accuracies.append((correct / total))
+            recalls.append(true_positive/(true_positive + false_negative))
 
         if (get_predictions):
             # Get the prediction for each sample
@@ -108,28 +121,35 @@ def Kfold_logistic_regression(dataset, k_folds=2, num_epochs=5, learning_rate=0.
                     # Save prediction
                     preds[i, fold] = outputs.round().detach().numpy()[0][0]
 
+    # Compute all the scores
     avg_accuracy = sum(accuracies)/len(accuracies)
+    avg_recall = sum(recalls)/len(recalls)
+    avg_f1 = 2*(avg_accuracy * avg_recall) / (avg_accuracy + avg_recall)
 
     if (get_predictions):
         # Combined prediction of all the folds
         predictions = [np.argmax(np.bincount(preds[i, :].astype('int'))) for i in range(X.shape[0])]
-        return avg_accuracy, predictions
+        return predictions, avg_accuracy, avg_recall, avg_f1
     else:
-        return avg_accuracy
+        return avg_accuracy, avg_recall, avg_f1
+
 
 
 def Kfold_SVM(dataset, k_folds, model_params, get_predictions = False):
     """
     Train a scikit-learn SVM model by doing a KFold, given a model file.
             Parameters:
-                     dataset (pandas dataframe): Dataset
-                     k_folds (int): Number of folds.
-                     model_params (dictionary): Set of hyperparameters for the SVM
-                     get_predictions (bool): If True, the predictions for all the dataset will be
+                    dataset (pandas dataframe): Dataset
+                    k_folds (int): Number of folds.
+                    model_params (dictionary): Set of hyperparameters for the SVM
+                    get_predictions (bool): If True, the predictions for all the dataset will be
                         calculated for each fold and the combined predicted is returned
             Returns:
-                    avg_accuracy (float): Average accuracy of the trained model
                     predictions (int list): List with the predictions for each sample. Only if get_predictions is True
+                    avg_accuracy (float): Average accuracy of the trained model
+                    avg_recall (float): Recall score (Ability of the classifier to find all the positive samples)
+                    avg_f1 (float): F1 score or F-measure. Harmonic mean of the precision 
+                    
     """
 
     X = dataset.values[:,:-1]
@@ -152,6 +172,8 @@ def Kfold_SVM(dataset, k_folds, model_params, get_predictions = False):
     kf = KFold(n_splits=k_folds)
 
     acc_kfold = []
+    recall_kfold = []
+    f1_kfold = []
     for train_index , test_index in kf.split(X):
         X_train , X_test = X[train_index,:],X[test_index,:]
         Y_train , Y_test = Y[train_index] , Y[test_index]
@@ -159,17 +181,22 @@ def Kfold_SVM(dataset, k_folds, model_params, get_predictions = False):
         model.fit(X_train,Y_train)
         pred_values = model.predict(X_test)
         acc_kfold.append(accuracy_score(pred_values , Y_test))
+        recall_kfold.append(recall_score(pred_values, Y_test))
+        f1_kfold.append(f1_score(pred_values, Y_test))
 
         if (get_predictions):
             # Save all the predictions for this fold
             preds[fold] = model.predict(X)
             fold += 1
 
+    # Compute all the scores
     avg_accuracy = sum(acc_kfold)/k_folds
+    avg_recall = sum(recall_kfold)/k_folds
+    avg_f1 = sum(f1_kfold)/k_folds
 
     if (get_predictions):
         # Combined prediction of all the folds
         predictions = [np.argmax(np.bincount(preds[:, i].astype('int'))) for i in range(X.shape[0])]
-        return avg_accuracy, predictions
+        return predictions, avg_accuracy, avg_recall, avg_f1
     else:
-        return avg_accuracy
+        return avg_accuracy, avg_recall, avg_f1

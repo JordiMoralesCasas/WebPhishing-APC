@@ -10,6 +10,7 @@ hyperparam_search_logistic(reduced_dataset_standard15, learning_rates=learning_r
                             save=True, output_name="TestLogiReg.sav")
 
 
+n_iter = 200
 # SVM parameters
 Cs = loguniform(1e-5, 100)
 gammas = [0.001*i for i in range(1, 10000)]
