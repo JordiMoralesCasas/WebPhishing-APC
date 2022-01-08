@@ -128,6 +128,20 @@ There are already trained models saved in this repository. The example provided 
 ## Conclusions
 [comment]: <> (El millor model que s'ha aconseguit ha estat... En comparació amb l'estat de l'art i els altres treballs que hem analitzat....)
 
+The best model obtained has been the SVM model with a 2nd degree polynomial kernel. This decision comes from it having the best accuracy score, which is confirmed to be consistent by the recall and F1-score scores. The training time is higher than the rest of the selected models but, since it is still good, and we don't necessarily need a fast model, I have decided to stick to the plain performance regarding the results of the algorithm.
+
+As an example of how the classification with this model works, the following graphics show, firstly, a confusion matrix of the predictions against the real labels of all the samples of the dataset and below that, three images with the decision boundary that the algorithm builds between the first three principals components along with all the samples ("Phishing" in red, "Legitimate" in blue).
+
+<p align="center">
+<img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/ModelConfusionMatrix.png?raw=true"width="450" />
+</p>
+
+<p align="center">
+<img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/ModelDecisionBoundary.png?raw=true"width="900" />
+</p>
+
+
+
 ## Ideas to work in the future
  - Test the difference between normalizing or standardizing the data.
 

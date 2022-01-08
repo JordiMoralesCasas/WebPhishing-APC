@@ -1,7 +1,6 @@
 import sys
 sys.path.insert(1, '../src/helpers')
 sys.path.insert(1, '../src')
-
 from imports import *
 from generate_features import *
 

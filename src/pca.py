@@ -23,7 +23,7 @@ def perform_pca(dataset, auto = False , n_comp=None, obj_variance = 1):
             Returns:
                     pca_dataset (pandas dataframe): Dataset after applying PCA
     """
-    # Convert data to torch tensor
+    # Convert data to torch tensors
     X, Y = dataset.values[:,:-1], dataset.values[:,-1]
     X_torch, Y_torch = torch.tensor(X), torch.tensor(Y)
 

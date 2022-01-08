@@ -34,7 +34,7 @@ def hyperparam_search_logistic(dataset, learning_rates=[0.05], cvfolds=[10], num
                 print("Progress: "+str(idx)+"/"+str(len(learning_rates)*len(cvfolds)))
             
             # KFold for the current set of hyperparameters
-            current_accuracy = Kfold_logistic_regression(dataset, k_folds=k, num_epochs=num_epochs, learning_rate=lr)
+            current_accuracy, _, _ = Kfold_logistic_regression(dataset, k_folds=k, num_epochs=num_epochs, learning_rate=lr)
 
             if (current_accuracy > max_accuracy):
                 max_accuracy = current_accuracy

@@ -13,7 +13,7 @@ def logistic_func(x):
     """
     Logistic function
             Parameters:
-                    x (flaot): input
+                    x (float): input
     """
     return 1 / (1 + np.exp(-x))
 
@@ -70,14 +70,14 @@ def plot_contours(ax, clf, xx, yy, **params):
 
 def SVM_decision_boundary(dataset, filename, column_pairs):
     """
-    Visual 2D representation the decision boundary of a SVM model.
+    Visual 2D representation of the decision boundary of a SVM model.
             Parameters:
                     dataset (pandas dataframe): Dataset used for training
                     filename (string): file that contains a saved model
                     column_pairs (list of string lists): A list containing lists with
                         the pairs of features that want to be visualized
     """
-    # Load params
+    # Load parameters
     model_params = pickle.load(open(filename, 'rb'))
     
     kernel = model_params['kernel']
