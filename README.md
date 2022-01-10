@@ -10,7 +10,10 @@ The dataset consists of 11430 unique samples with 89 attributes:
   - **55** are numerical data, most in the form of counts or averages.
 
 ## Objective
-The main goal is to train a supervised learning model that can detect if a website is being used for phishing or not.
+The main goal is to find a classification model based on a supervised learning algorithm that can detect if a website is being used for phishing or not. To compare different candidates, the accuracy will be used as the main score. The recall and F1-score scores will serve as a secondary source of confidence in the obtained results.
+
+The required time for training will be also considered if it is exceptionally high compared with the rest of results, but having a really fast model is not a priority for this analysis.
+
 
 
 ## Exploratory Data Analysis
@@ -52,7 +55,7 @@ As we thought, the legitimate samples tend to be closer (have less variance) tha
 
 ## Models that will be explored
 [comment]: <> (Durant aquesta pràctica hem realitzat diferents experiments.)
-So far I have used two different algorithms for the analysis:
+Two different machine learning algorithms have been used for the analysis:
 
 - A logistic regression model implemented with PyTorch
 
@@ -62,6 +65,8 @@ So far I have used two different algorithms for the analysis:
     - RBF (Radial Basis Function) kernel.
     - Sigmoid kernel.
     - Polynomial kernel (up to 4th degree).
+
+The reason for not using more types of algorithms is that I thought that it would be more interesting to focus on how the experiments related to the preprocessing affect the result. With fewer types of models, I was able to spend more time experimenting with different configurations for two algorithms, instead of covering, with less detail, four or five.
 
 ## Preprocessing
 [comment]: <> (Quines proves hem realitzat que tinguin a veure amb el pre-processat? com han afectat als resultats?)
@@ -75,11 +80,11 @@ Once that was covered, the first consideration was if feature scaling would repr
 
  - #### Feature Selection
 
-The last experiment regarding preprocessing was seeing if reducing the dimensions of the data would be beneficial in any way. By this I mean that a model, even with a slightly worse accuracy or f-score, may be still worth it because the training time is more convenient.
+The last experiment regarding preprocessing was seeing if reducing the dimensions of the data would be beneficial in any way. By this I mean that a model, even with a slightly worse accuracy or F1-score, may be still worth it because the training time is more convenient.
 
 For this purpose I have studied two methods for reducing the dimensions: The first one is performing a feature selection of some kind. For this dataset I decided to do selections based on the Mutual Information between each independent variable and the objective variable. This is a great score function for data that mixes categorical and non-categorical variables, as well as being model neutral (can be applied to different types of ML models) and relatively fast.
 
-Two new datasets were created with feature selection, one with 15 attributes and the other with 30. I chose arbitrarily these number because I was interested in studying the effect of a significant reduction of features (Remember that we began with 87 features). After some tests, the results showed that for both cases, the accuracies, as well as the recalls, were pretty close to the model without feature selection (usually a few tenths behind). Overall the F-score shown a great performance.
+Two new datasets were created with feature selection, one with 15 attributes and the other with 30. I chose arbitrarily these number because I was interested in studying the effect of a significant reduction of features (Remember that we began with 87 features). After some tests, the results showed that for both cases, the accuracies, as well as the recalls, were pretty close to the model without feature selection (usually a few tenths behind). Overall the F1-score shown a great performance.
 
 If we take a look at the training times, they were much better, especially with the case with 30 features, consistently improving by 40% to 60% the original time.
 
@@ -97,7 +102,7 @@ For the case with 95%, althought there are some problems with the training times
 
 For all the different models an hyperparameter search has been done, most of them being the result of random searches of 200 iterations each. For the SVM models of 2nd, 3rd and 4th degree, the number of iterations was reduced to 50 because some combinations of hyperparameters caused very long training times.
 
-Also, some cross-validation (K-fold) was introduced for validating the results. For the logistic regression the number of folds was found as part of the hyperparameter search, while for the SVM models it was set from the beginning: The ones with a polynomial kernel of 2nd, 3rd and 4th degree used 10 folds in order to prevent overfitting the data (The accuracy for the test sets was greater than 99%). The rest used 3 folds.
+Also, some cross-validation (K-Fold) was introduced for validating the results. For the logistic regression the number of folds was found as part of the hyperparameter search, while for the SVM models it was set from the beginning: The ones with a polynomial kernel of 2nd, 3rd and 4th degree used 10 folds in order to prevent overfitting the data (The accuracy for the test sets was greater than 99%). The rest used 3 folds.
 
 ## Model summary
 The following 7 models are a selection of the most relevant models that I have found.
@@ -123,14 +128,13 @@ For training and saving new models, follow the example in *demo/training.py*. By
 
 There are already trained models saved in this repository. The example provided in *demo/scoring.py*  show how to do this. Use the following command to score the *Test* models:
 
-``` python demo/scoring.py ```
+``` python demo/scorin.py ```
 
 ## Conclusions
-[comment]: <> (El millor model que s'ha aconseguit ha estat... En comparació amb l'estat de l'art i els altres treballs que hem analitzat....)
 
-The best model obtained has been the SVM model with a 2nd degree polynomial kernel. This decision comes from it having the best accuracy score, which is confirmed to be consistent by the recall and F1-score scores. The training time is higher than the rest of the selected models but, since it is still good, and we don't necessarily need a fast model, I have decided to stick to the plain performance regarding the results of the algorithm.
+The best model obtained has been the SVM model with a 2nd degree polynomial kernel. This decision comes from it having the best accuracy score (95.932%), which is confirmed to be consistent by the recall (96.2713%) and F1-score (0.959198) scores. The training time (35.3752s) is higher than the rest of the selected models but, since it is still good, and we don't necessarily need a fast model, I have decided to stick to the plain performance regarding the results of the algorithm.
 
-As an example of how the classification with this model works, the following graphics show, firstly, a confusion matrix of the predictions against the real labels of all the samples of the dataset and below that, three images with the decision boundary that the algorithm builds between the first three principals components along with all the samples ("Phishing" in red, "Legitimate" in blue).
+As an example of how the classification with this model works, the following graphics show, firstly, a confusion matrix of the predictions against the real labels of all the samples of the dataset and, below that, three images with the decision boundary that the algorithm builds between the first three principals components along with all the samples ("Phishing" in red, "Legitimate" in blue).
 
 <p align="center">
 <img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/ModelConfusionMatrix.png?raw=true"width="450" />
@@ -139,6 +143,10 @@ As an example of how the classification with this model works, the following gra
 <p align="center">
 <img src="https://github.com/JordiMoralesCasas/WebPhishing-APC/blob/master/figures/ModelDecisionBoundary.png?raw=true"width="900" />
 </p>
+
+Overall, the results of this analysis are concluding, and I am satisfied with the accuracy obtained. Still, I want to say that the selection of the final model was really hard due to the closeness of the rest of models and, in a different context, maybe some other could have been accepted.
+
+I have found interesting the fact that for almost every experiment regarding preprocessing that I have performed, it was possible to find a correct configuration of hyperparameters that produced an acceptable model.
 
 
 
@@ -151,7 +159,6 @@ As an example of how the classification with this model works, the following gra
 
  - Implement some kind of neural network (and overall use more features from PyTorch)
 
+ - Be able to save actual trained models instead of just configurations of hyperparameters. I was able to do that in the firsts versions of the code, but I got some problems after introducing K-Fold and decided to implement the current solution.
 
-
-[comment]: <> (## Llicencia)
-[comment]: <> (El projecte s’ha desenvolupat sota llicència ZZZz.)
+ - Use classes with methods and attributes instead of functions.
